@@ -19,7 +19,7 @@ repositories {
 
 sourceSets {
     val main by getting
-    val dbGet by creating {
+    val dbGen by creating {
         compileClasspath += main.compileClasspath
         runtimeClasspath += main.runtimeClasspath
         compileClasspath += main.output
