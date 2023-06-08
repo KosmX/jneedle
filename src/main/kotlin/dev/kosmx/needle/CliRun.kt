@@ -12,6 +12,7 @@ import java.nio.file.attribute.BasicFileAttributes
 import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.io.path.Path
+import kotlin.io.path.extension
 
 fun main(args: Array<String>) {
 
@@ -47,17 +48,19 @@ fun main(args: Array<String>) {
             Int.MAX_VALUE,
             object : SimpleFileVisitor<Path>() {
                 override fun visitFile(file: Path, attrs: BasicFileAttributes): FileVisitResult {
-                    counter.incrementAndGet()
-                    CoroutineScope(dispatcher).launch {
-                        val result = JarChecker.checkJar(file.toFile())
-                        if (result.isNotEmpty()) {
-                            foundStuff.incrementAndGet()
-                            withContext(Dispatchers.Default) {
-                                println("$file matches ${result.map { it.getMessage() }}")
+                    if (file.extension == "jar") {
+                        counter.incrementAndGet()
+                        CoroutineScope(dispatcher).launch {
+                            val result = JarChecker.checkJar(file.toFile())
+                            if (result.isNotEmpty()) {
+                                foundStuff.incrementAndGet()
+                                withContext(Dispatchers.Default) {
+                                    println("$file matches ${result.map { it.getMessage() }}")
+                                    counter.decrementAndGet()
+                                }
+                            } else {
                                 counter.decrementAndGet()
                             }
-                        } else {
-                            counter.decrementAndGet()
                         }
                     }
 
