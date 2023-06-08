@@ -68,10 +68,7 @@ fun main(args: Array<String>) {
                 }
             }
         )
-        Thread.sleep(100)
-        while (counter.get() != 0) {
-            Thread.sleep(100)
-        }
+
         dispatcher.close()
         println("Finished running, found ${foundStuff.get()}")
     }

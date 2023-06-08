@@ -1,13 +1,9 @@
-import org.jetbrains.compose.compose
-import org.jetbrains.compose.desktop.application.dsl.TargetFormat
-
 plugins {
     java
     val kotlinVersion = "1.8.20"
     kotlin("jvm") version kotlinVersion
     kotlin("plugin.serialization") version kotlinVersion
     id("com.github.johnrengelman.shadow") version "8.1.1"
-    id("org.jetbrains.compose") version "1.4.0"
 }
 
 java.sourceCompatibility = JavaVersion.VERSION_17
@@ -16,20 +12,16 @@ java.targetCompatibility = JavaVersion.VERSION_17
 group = "dev.kosmx.jarchecker"
 version = "1.0.0"
 
-repositories {
-    mavenCentral()
-    maven("https://jitpack.io")
+allprojects {
+    repositories {
+        mavenCentral()
+        maven("https://jitpack.io")
+    }
 }
 
 sourceSets {
     val main by getting
     val dbGen by creating {
-        compileClasspath += main.compileClasspath
-        runtimeClasspath += main.runtimeClasspath
-        compileClasspath += main.output
-        runtimeClasspath += main.output
-    }
-    val composeMain by creating {
         compileClasspath += main.compileClasspath
         runtimeClasspath += main.runtimeClasspath
         compileClasspath += main.output
@@ -50,24 +42,11 @@ dependencies {
     implementation("org.slf4j:slf4j-jdk14:2.0.7")
 
 
-    "composeMainImplementation"(compose.desktop.currentOs)
-
     testImplementation(kotlin("test"))
 }
 
 kotlin {
     jvmToolchain(java.targetCompatibility.majorVersion.toInt())
-}
-
-compose.desktop {
-    application {
-        mainClass = "MainKt" // TODO set it to somewhere
-        nativeDistributions {
-            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "JNeedle"
-            packageVersion = version as String
-        }
-    }
 }
 
 
