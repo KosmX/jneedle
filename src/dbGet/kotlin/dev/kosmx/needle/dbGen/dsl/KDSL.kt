@@ -50,6 +50,7 @@ class KDSL(private val entries: MutableList<Entry>) {
     inner class ByteCodeEntry : Entry {
         var className: String? = null
         var matchId: String = (idTracker++).toString()
+        var autoFilerInstructions: Boolean = false
 
         val fileName: String
             get() = "${this@KDSL.malwareId}-$matchId.jasm"
@@ -59,6 +60,7 @@ class KDSL(private val entries: MutableList<Entry>) {
         fun insn(vararg i: AbstractInsnNode) {
             instructions += i
         }
+
 
         @OptIn(ExperimentalSerializationApi::class)
         override fun generate(outputPath: Path): String {
@@ -90,7 +92,14 @@ class KDSL(private val entries: MutableList<Entry>) {
                 val dataEntr = JarEntry("info.json")
                 dataEntr.time = Instant.now().epochSecond
                 jar.putNextEntry(dataEntr)
-                Json.encodeToStream(Info(this@KDSL.malwareId, this@KDSL.type, matchId = matchId), jar)
+                Json.encodeToStream(
+                    Info(
+                        name = this@KDSL.malwareId,
+                        threat = this@KDSL.type,
+                        matchId = matchId,
+                        filterType = autoFilerInstructions,
+                    ), jar
+                )
                 jar.closeEntry()
 
             }

@@ -1,5 +1,5 @@
 package dev.kosmx.needle.dbGen.dsl
 
-interface TypeEntry {
-    fun KDSL.entry()
+fun interface TypeEntry {
+    fun entry(p: KDSL)
 }

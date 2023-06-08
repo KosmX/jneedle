@@ -9,7 +9,7 @@ interface ClassMatch : Match {
 
 }
 
-fun Sequence<AbstractInsnNode>.filterDebugInstructions() = filter {
-    it !is LineNumberNode
-}
-fun Sequence<AbstractInsnNode>.filterLabels() = filter { it !is LabelNode }
+fun Sequence<AbstractInsnNode>.filterMutable() = filterDebugInfo()
+
+
+fun Sequence<AbstractInsnNode>.filterDebugInfo() = filter { it.opcode != -1 }

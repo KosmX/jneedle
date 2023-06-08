@@ -40,6 +40,7 @@ fun main(args: Array<String>) {
         val dispatcher = Executors.newFixedThreadPool(threads).asCoroutineDispatcher()
 
         val counter = AtomicInteger(0)
+        val foundStuff = AtomicInteger(0)
         Files.walkFileTree(
             path,
             setOf(FileVisitOption.FOLLOW_LINKS),
@@ -50,10 +51,13 @@ fun main(args: Array<String>) {
                     CoroutineScope(dispatcher).launch {
                         val result = JarChecker.checkJar(file.toFile())
                         if (result.isNotEmpty()) {
+                            foundStuff.incrementAndGet()
                             withContext(Dispatchers.Default) {
                                 println("$file matches ${result.map { it.getMessage() }}")
                                 counter.decrementAndGet()
                             }
+                        } else {
+                            counter.decrementAndGet()
                         }
                     }
 
@@ -61,8 +65,12 @@ fun main(args: Array<String>) {
                 }
             }
         )
-        while (counter.decrementAndGet() != 0) ;
+        Thread.sleep(100)
+        while (counter.get() != 0) {
+            Thread.sleep(100)
+        }
         dispatcher.close()
+        println("Finished running, found ${foundStuff.get()}")
     }
 
 }

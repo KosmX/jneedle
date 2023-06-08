@@ -1,11 +1,14 @@
 package dev.kosmx.needle.database
 
 import dev.kosmx.needle.*
+import dev.kosmx.needle.core.InsnComparator
+import dev.kosmx.needle.lib.Word
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromStream
 import org.objectweb.asm.ClassReader
+import org.objectweb.asm.tree.AbstractInsnNode
 import org.objectweb.asm.tree.ClassNode
 import java.nio.file.Path
 import java.util.*
@@ -29,7 +32,21 @@ object FileParser {
                             ClassReader.SKIP_DEBUG
                         )
 
-                        MatchSequence(info.name, tree.methods.find { it.name == "pattern" }!!.instructions.toArray(), info.threat, matchId = info.matchId)
+                        if (info.filterType) {
+                            MatchFilteredSequence (
+                                info.name,
+                                tree.methods.find { it.name == "pattern" }!!.instructions.toArray().toWord(),
+                                info.threat,
+                                matchId = info.matchId
+                            )
+                        } else {
+                            MatchSequence(
+                                info.name,
+                                tree.methods.find { it.name == "pattern" }!!.instructions.toArray(),
+                                info.threat,
+                                matchId = info.matchId
+                            )
+                        }
                     }
                 }
 
@@ -51,8 +68,18 @@ object FileParser {
     }
 }
 
+private fun Array<AbstractInsnNode>.toWord(): Word<AbstractInsnNode> {
+    return Word(this, InsnComparator::compare)
+}
+
 @Serializable
-data class Info(val name: String, val threat: MatchType = MatchType.MALWARE, val encoded: Boolean = false, val matchId: String = "")
+data class Info(
+    val name: String,
+    val threat: MatchType = MatchType.MALWARE,
+    val encoded: Boolean = false,
+    val matchId: String = "",
+    val filterType: Boolean = false,
+)
 
 
 
