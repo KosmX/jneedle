@@ -9,6 +9,7 @@ plugins {
 dependencies {
     implementation(rootProject)
     implementation(compose.desktop.currentOs)
+    implementation("com.darkrockstudios:mpfilepicker-desktop:1.1.0")
 }
 
 compose.desktop {
