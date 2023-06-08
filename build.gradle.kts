@@ -76,4 +76,9 @@ tasks {
     build {
         dependsOn(shadowJar)
     }
+
+    create<JavaExec>("buildDb") {
+        this.mainClass.set("dev.kosmx.needle.dbGen.GeneratorKt")
+        this.classpath = sourceSets["dbGen"].runtimeClasspath
+    }
 }
