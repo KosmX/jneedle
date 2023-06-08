@@ -32,10 +32,9 @@ object Database {
     fun init(databaseUrl: String?, dataPath: Path) {
         try {
             if (databaseUrl != null) {
-                val localDatabase = dataPath.resolve("database")
                 var localDbVersion = -1
                 try {
-                    localDbVersion = localDatabase.resolve("version").readText().toInt()
+                    localDbVersion = dataPath.resolve("version").readText().toInt()
                 } catch (_: IOException) {
                 }
 
@@ -43,11 +42,14 @@ object Database {
                 if (localDbVersion < databaseVersion) {
                     dataPath.resolve("data").toFile().let { if (!it.isDirectory) it.mkdir() }
                     updateDb(databaseUrl, dataPath.resolve("data"))
-                    localDatabase.resolve("version").writeText(databaseVersion.toString())
+                    dataPath.resolve("version").writeText(databaseVersion.toString())
                 }
             }
         } catch (e: Exception) {
-            log(LogLevel.Warning) { "Failed to fetch database: $databaseUrl is not available."}
+            log(LogLevel.Warning) {
+                e.printStackTrace()
+                "Failed to fetch database: $databaseUrl is not available."
+            }
         }
 
         if (dataPath.toFile().isDirectory) {
@@ -68,7 +70,7 @@ object Database {
         val files = URL("$databaseUrl/files.json").openConnection().getInputStream().use {
             Json.decodeFromStream<DatabaseFiles>(it)
         }
-        Files.walk(dataPath).filter { it.name !in files.files }.forEach {
+        Files.walk(dataPath).filter { it.toFile().isFile && it.name !in files.files }.forEach {
             Files.delete(it) // delete outdated things
         }
 
