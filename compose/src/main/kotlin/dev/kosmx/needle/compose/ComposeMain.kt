@@ -17,12 +17,14 @@ import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
+import com.darkrockstudios.libraries.mpfilepicker.DirectoryPicker
 import com.darkrockstudios.libraries.mpfilepicker.FilePicker
 import dev.kosmx.needle.CheckWrapper
 import dev.kosmx.needle.ScanResult
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.datetime.*
 import java.io.File
 import java.nio.file.Path
 import kotlin.io.path.Path
@@ -36,13 +38,20 @@ object ComposeMain {
     fun App() {
 
         var showDirectoryPicker by remember { mutableStateOf(false) }
+        var showFilePicker by remember { mutableStateOf(false) }
         var targetPath by remember { mutableStateOf("C:\\") }
         var validTarget by remember { mutableStateOf(true) }
         CheckWrapper.init()
 
-        FilePicker(showDirectoryPicker) { path ->
-            showDirectoryPicker = false
+        FilePicker(showFilePicker) { path ->
+            showFilePicker = false
             targetPath = path?.path ?: targetPath
+            validTarget = File(targetPath).exists()
+        }
+
+        DirectoryPicker(showDirectoryPicker) { path ->
+            showDirectoryPicker = false
+            targetPath = path ?: targetPath
             validTarget = File(targetPath).exists()
         }
 
@@ -85,7 +94,12 @@ object ComposeMain {
                     Button(
                         modifier = Modifier.padding(0.dp, 0.dp, 10.dp, 5.dp),
                         onClick = { showDirectoryPicker = true }) {
-                        Text("Select")
+                        Text("Select folder")
+                    }
+                    Button(
+                        modifier = Modifier.padding(0.dp, 0.dp, 10.dp, 5.dp),
+                        onClick = { showFilePicker = true }) {
+                        Text("Select file")
                     }
                     Button(colors = ButtonDefaults.buttonColors(Color(85, 187, 47), Color(1f, 1f, 1f)),
                         modifier = Modifier.padding(0.dp, 0.dp, 10.dp, 5.dp),
@@ -107,8 +121,23 @@ object ComposeMain {
     private fun callAPIChecker(path: Path) {
         CoroutineScope(Dispatchers.Default).launch {
             if (path.toFile().let { it.isFile || it.isDirectory })
+                log("Scan started on $path")
                 foundFilesResult = CheckWrapper.checkPath(path)
+                log("Scan finished")
         }
+    }
+    private fun log(s: String){
+        val logTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
+        val formattedLogTime = logTime.let {
+            buildString {
+                append(it.hour.toString().padStart(2, '0'))
+                append(":")
+                append(it.minute.toString().padStart(2, '0'))
+                append(":")
+                append(it.second.toString().padStart(2, '0'))
+            }
+        }
+        loggerText += "[$formattedLogTime] - $s\n"
     }
 
 }
