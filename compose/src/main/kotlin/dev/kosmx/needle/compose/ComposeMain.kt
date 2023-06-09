@@ -25,6 +25,7 @@ import com.darkrockstudios.libraries.mpfilepicker.DirectoryPicker
 import com.darkrockstudios.libraries.mpfilepicker.FilePicker
 import dev.kosmx.needle.CheckWrapper
 import dev.kosmx.needle.ScanResult
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -50,6 +51,8 @@ object ComposeMain {
         var showFilePicker by remember { mutableStateOf(false) }
         var targetPath by remember { mutableStateOf("C:\\") }
         var validTarget by remember { mutableStateOf(true) }
+
+        val composerScope = rememberCoroutineScope()
 
         CheckWrapper.init()
 
@@ -128,7 +131,7 @@ object ComposeMain {
                         colors = ButtonDefaults.buttonColors(Color(85, 187, 47), Color(1f, 1f, 1f)),
                         modifier = Modifier.padding(0.dp, 0.dp, 10.dp, 5.dp),
                         onClick = {
-                            callAPIChecker(Path(targetPath))
+                            callAPIChecker(Path(targetPath), composerScope)
                         },
                         enabled = scanRunnable
                     ) {
@@ -154,17 +157,19 @@ object ComposeMain {
         }
     }
 
-    private fun callAPIChecker(path: Path) {
+    private fun callAPIChecker(path: Path, coroutineScope: CoroutineScope) {
         val infectedCallback: ((ScanResult) -> Unit) = {
             //if any infections are found (just to make sure)
             if (it.second.isNotEmpty()) {
                 //log them all
-                log(buildString {
-                    append("Detected the following in ${it.first.name}: ")
-                    it.second.forEach { infection ->
-                        append("${infection.getMessage()} ")
-                    }
-                })
+                coroutineScope.launch {
+                    log(buildString {
+                        append("Detected the following in ${it.first.name}: ")
+                        it.second.forEach { infection ->
+                            append("${infection.getMessage()} ")
+                        }
+                    })
+                }
             }
         }
 
@@ -181,13 +186,17 @@ object ComposeMain {
                     jarVisitCallback = infectedCallback, scannedCount = count
                 )
 
-                scanRunnable = true
-                log(
-                    "Scan finished, $count ${if (count.element == 1) "file was" else "files were"} tested, " +
-                            "${foundFilesResult.count()} malicious file(s) found"
-                )
+                coroutineScope.launch {
+                    scanRunnable = true
+                    log(
+                        "Scan finished, $count ${if (count.element == 1) "file was" else "files were"} tested, " +
+                                "${foundFilesResult.count()} malicious file(s) found"
+                    )
+                }
             } else {
-                log("Error! The most likely cause is an invalid path")
+                coroutineScope.launch {
+                    log("Error! The most likely cause is an invalid path")
+                }
             }
         }
     }

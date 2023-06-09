@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.util.archivesName
+
 plugins {
     val kotlinVersion = "1.8.20"
     kotlin("jvm") version kotlinVersion
@@ -15,10 +17,36 @@ dependencies {
 
 compose.desktop {
     application {
-        mainClass = "MainKt"
+        mainClass = "dev.kosmx.needle.compose.ComposeMainKt"
     }
 }
 
 kotlin {
-    jvmToolchain(17)
+    jvmToolchain(8)
+}
+
+version = rootProject.version
+
+tasks {
+
+    archivesName.set("jneedle-gui")
+    jar {
+        from("LICENSE") {
+            rename { "${it}_${base.archivesName.get()}" }
+        }
+        manifest {
+            attributes(
+                "Main-Class" to "dev.kosmx.needle.compose.ComposeMainKt",
+            )
+        }
+        archiveClassifier.set("slim")
+    }
+
+    shadowJar {
+        //configurations = listOf(project.configurations["shadowImplement"])
+        archiveClassifier.set("")
+    }
+    build {
+        dependsOn(shadowJar)
+    }
 }

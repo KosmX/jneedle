@@ -10,7 +10,7 @@ java.sourceCompatibility = JavaVersion.VERSION_1_8
 java.targetCompatibility = JavaVersion.VERSION_1_8
 
 group = "dev.kosmx.jarchecker"
-version = "1.0.0"
+version = project.property("version") as String
 
 allprojects {
     repositories {
