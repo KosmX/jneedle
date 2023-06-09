@@ -76,6 +76,8 @@ tasks {
 
     shadowJar {
         archiveClassifier.set("")
+        relocate("kotlin", "dev.kosmx.needle.kotlin")
+        relocate("kotlinx", "dev.kosmx.needle.kotlinx")
     }
     build {
         dependsOn(shadowJar)
