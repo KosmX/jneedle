@@ -94,7 +94,10 @@ object CheckWrapper {
     ): List<ScanResult> = coroutineScope {
         require(initialized) { "Cannot run check before initialization is complete" }
         if (path.toFile().isFile) { // single file selection case
-            return@coroutineScope listOf(path.toFile() to checkJar(path))
+            return@coroutineScope listOf(path.toFile() to checkJar(path).also {
+                scannedCount.element++
+                jarVisitCallback(path.toFile() to it)
+            })
         }
 
         val fileChannel = Channel<File>(threads) // fine-tuning may be needed
@@ -123,8 +126,8 @@ object CheckWrapper {
                 // "if there is a new job, do it."
                 for (file in receiveChannel) {
                     val r = JarChecker.checkJar(file)
-                    jarVisitCallback(file to r)
                     if (r.isNotEmpty()) {
+                        jarVisitCallback(file to r)
                         results += file to r
                     }
                 }
