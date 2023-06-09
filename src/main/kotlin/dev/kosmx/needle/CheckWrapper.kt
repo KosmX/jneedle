@@ -29,7 +29,7 @@ typealias ScanResult = Pair<File, Set<JarCheckResult>>
 object CheckWrapper {
     private var initialized = false
 
-    private val defaultUrl = System.getProperty("dev.kosmx.jneedle.removeDatabase") ?: String(JarCheckResult::class.java.getResourceAsStream("/url")!!.readBytes())
+    private val defaultUrl = System.getProperty("dev.kosmx.jneedle.remoteDatabase") ?: String(JarCheckResult::class.java.getResourceAsStream("/url")!!.readBytes())
     @JvmStatic
     fun init(
         databaseUrl: String? = defaultUrl,
