@@ -9,6 +9,8 @@ plugins {
 dependencies {
     implementation(rootProject)
     implementation(compose.desktop.currentOs)
+    implementation("com.darkrockstudios:mpfilepicker-desktop:1.1.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
 }
 
 compose.desktop {
