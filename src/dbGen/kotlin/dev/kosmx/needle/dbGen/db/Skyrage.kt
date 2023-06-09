@@ -3,6 +3,7 @@ package dev.kosmx.needle.dbGen.db
 import dev.kosmx.needle.core.MatchType
 import dev.kosmx.needle.dbGen.dsl.KDSL
 import org.objectweb.asm.Opcodes
+import org.objectweb.asm.tree.LdcInsnNode
 import org.objectweb.asm.tree.MethodInsnNode
 import org.objectweb.asm.tree.TypeInsnNode
 
@@ -49,6 +50,17 @@ fun KDSL.skyrage() {
             MethodInsnNode(Opcodes.INVOKEVIRTUAL, "java/lang/Runtime", "exec", "([Ljava/lang/String;)Ljava/lang/Process;"),
             MethodInsnNode(Opcodes.INVOKEVIRTUAL, "java/lang/Process", "waitFor", "()I"),
             MethodInsnNode(Opcodes.INVOKEVIRTUAL, "java/io/File", "delete", "()Z"),
+        )
+    }
+
+    "URL1" byteCodeEntry {
+        insn(
+            LdcInsnNode("connect.skyrage.de")
+        )
+    }
+    "URL2" byteCodeEntry {
+        insn(
+            LdcInsnNode("t23e7v6uz8idz87ehugwq.skyrage.de")
         )
     }
 }
