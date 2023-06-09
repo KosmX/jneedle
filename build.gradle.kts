@@ -6,8 +6,8 @@ plugins {
     id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
-java.sourceCompatibility = JavaVersion.VERSION_17
-java.targetCompatibility = JavaVersion.VERSION_17
+java.sourceCompatibility = JavaVersion.VERSION_1_8
+java.targetCompatibility = JavaVersion.VERSION_1_8
 
 group = "dev.kosmx.jarchecker"
 version = "1.0.0"
@@ -29,17 +29,23 @@ sourceSets {
     }
 }
 
+configurations {
+    val shadowImplement by creating
+    val implementation by getting
+    implementation.extendsFrom(shadowImplement)
+}
+
 dependencies {
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0")
-    implementation("org.jetbrains.kotlinx:kotlinx-cli:0.3.5")
+    "shadowImplement"("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
+    "shadowImplement"("org.jetbrains.kotlinx:kotlinx-cli:0.3.5")
 
-    implementation("org.ow2.asm:asm:${project.property("asm_version")}")
-    implementation("org.ow2.asm:asm-tree:${project.property("asm_version")}")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1")
+    "shadowImplement"("org.ow2.asm:asm:${project.property("asm_version")}")
+    "shadowImplement"("org.ow2.asm:asm-tree:${project.property("asm_version")}")
+    "shadowImplement"("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1")
 
-    implementation("com.github.Col-E:CAFED00D:1.10.2")
-    implementation("org.slf4j:slf4j-jdk14:2.0.7")
+    "shadowImplement"("com.github.Col-E:CAFED00D:1.10.2")
+    "shadowImplement"("org.slf4j:slf4j-jdk14:2.0.7")
+    //shadow("org.slf4j:slf4j:2.0.7")
 
 
     testImplementation(kotlin("test"))
@@ -69,15 +75,23 @@ tasks {
             rename { "${it}_${base.archivesName.get()}" }
         }
         manifest {
-            attributes("Main-Class" to "dev.kosmx.discordBot.MainKt")
+            attributes(
+                "Main-Class" to "dev.kosmx.needle.CliRunKt",
+                "Premain-Class" to "dev.kosmx.needle.launchWrapper.JavaAgentLauncher",
+                "Agent-Class" to "dev.kosmx.needle.launchWrapper.JavaAgentLauncher",
+                "Can-Redefine-Classes" to "false",
+                "Can-Retransform-Classes" to "false",
+            )
         }
         archiveClassifier.set("slim")
     }
 
     shadowJar {
+        configurations = listOf(project.configurations["shadowImplement"])
         archiveClassifier.set("")
         relocate("kotlin", "dev.kosmx.needle.kotlin")
         relocate("kotlinx", "dev.kosmx.needle.kotlinx")
+        relocate("org.slf4j", "dev.kosmx.needle.org.slf4j")
     }
     build {
         dependsOn(shadowJar)

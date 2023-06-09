@@ -7,10 +7,13 @@ import kotlinx.cli.ArgType
 import kotlinx.cli.default
 import kotlinx.cli.required
 import kotlin.io.path.Path
+import kotlin.time.ExperimentalTime
+import kotlin.time.measureTime
 
+@OptIn(ExperimentalTime::class)
 fun main(args: Array<String>) {
 
-    val defaultUrl = String(JarCheckResult::class.java.getResourceAsStream("/url")!!.readAllBytes())
+    val defaultUrl = String(JarCheckResult::class.java.getResourceAsStream("/url")!!.readBytes())
 
     val parser = ArgParser("jar checker")
     val file by parser.option(ArgType.String, shortName = "f", fullName = "file", description = "file or directory").required()
@@ -29,48 +32,16 @@ fun main(args: Array<String>) {
         println(JarChecker.checkJar(path.toFile()))
     } else {
 
-        val foundStuff = CheckWrapper.checkPathBlocking(path)
-
-        foundStuff.forEach {(file, founding) ->
-            println("$file matches ${founding.map { it.getMessage() }}")
-        }
-
-        println("Finished running, found ${foundStuff.size}")
-        /**
-        val dispatcher = Executors.newFixedThreadPool(threads).asCoroutineDispatcher()
-
-        val counter = AtomicInteger(0)
-        val foundStuff = AtomicInteger(0)
+        measureTime {
+            val foundStuff = CheckWrapper.checkPathBlocking(path, threads)
 
 
-        Files.walkFileTree(
-            path,
-            setOf(FileVisitOption.FOLLOW_LINKS),
-            Int.MAX_VALUE,
-            object : SimpleFileVisitor<Path>() {
-                override fun visitFile(file: Path, attrs: BasicFileAttributes): FileVisitResult {
-                    if (file.extension == "jar") {
-                        counter.incrementAndGet()
-                        CoroutineScope(dispatcher).launch {
-                            val result = JarChecker.checkJar(file.toFile())
-                            if (result.isNotEmpty()) {
-                                foundStuff.incrementAndGet()
-                                withContext(Dispatchers.Default) {
-                                    println("$file matches ${result.map { it.getMessage() }}")
-                                    counter.decrementAndGet()
-                                }
-                            } else {
-                                counter.decrementAndGet()
-                            }
-                        }
-                    }
-
-                    return super.visitFile(file, attrs)
-                }
+            foundStuff.forEach { (file, founding) ->
+                println("$file matches ${founding.map { it.getMessage() }}")
             }
-        )
 
-        */
+            println("Finished running, found ${foundStuff.size}")
+        }.let { println("Malware checking done in ${it.inWholeMilliseconds} ms") }
     }
 
 }

@@ -13,6 +13,7 @@ import java.io.InputStream
 import java.nio.file.Path
 import java.util.jar.JarInputStream
 import kotlin.io.path.Path
+import kotlin.jvm.internal.Ref.IntRef
 
 
 typealias ScanResult = Pair<File, Set<JarCheckResult>>
@@ -28,15 +29,12 @@ typealias ScanResult = Pair<File, Set<JarCheckResult>>
 object CheckWrapper {
     private var initialized = false
 
-    private val defaultUrl = String(JarCheckResult::class.java.getResourceAsStream("/url")!!.readAllBytes())
+    private val defaultUrl = String(JarCheckResult::class.java.getResourceAsStream("/url")!!.readBytes())
     @JvmStatic
     fun init(databaseUrl: String? = defaultUrl, databaseLocation: Path = Path(System.getProperty("user.home")).resolve(".jneedle")) {
 
-        val db = databaseLocation
-        if (!db.toFile().isDirectory) {
-            db.toFile().mkdirs()
-        }
-        Database.init(databaseUrl, db)
+        databaseLocation.toFile().mkdirs()
+        Database.init(databaseUrl, databaseLocation)
         initialized = true
     }
 
@@ -82,13 +80,17 @@ object CheckWrapper {
      * @param path the path to check, it will recursively walk on the path and check every single file
      * @param threads limit the worker threads. The process can be IO bound, setting it to higher value than the actual CPU cores is normal
      * @param dispatcher dispatcher for file IO checking. The function does the directory walk on the invoker thread.
+     * @param jarVisitCallback callback function invoked after every jar check. Invocation happens on thread, it must be thread-safe
      * @return check result
      */
     //@JvmStatic this can only be used from Kotlin, fancy java interface isn't needed
+    @OptIn(ExperimentalStdlibApi::class)
     suspend fun checkPath(
         path: Path,
         threads: Int = Runtime.getRuntime().availableProcessors() * 4,
-        dispatcher: CoroutineDispatcher = Dispatchers.IO
+        dispatcher: CoroutineDispatcher = Dispatchers.IO,
+        jarVisitCallback: ((ScanResult) -> Unit) = { },
+        scannedCount: IntRef = IntRef(),
     ): List<ScanResult> = coroutineScope {
         require(initialized) { "Cannot run check before initialization is complete" }
         if (path.toFile().isFile) { // single file selection case
@@ -102,11 +104,14 @@ object CheckWrapper {
 
         // Set the fileChannel source. This should effectively endlessly generate files (or as long as there is anything left)
         launch {
+            var count = 0
             path.toFile().walk().forEach {
                 if (it.extension == "jar" && it.isFile) {
+                    count++
                     fileChannel.send(it) // channel has finite size, it will suspend if the buffer is full
                 }
             }
+            scannedCount.element = count
             fileChannel.close() // all files are sent, "insert close element"
         }
 
@@ -118,6 +123,7 @@ object CheckWrapper {
                 // "if there is a new job, do it."
                 for (file in receiveChannel) {
                     val r = JarChecker.checkJar(file)
+                    jarVisitCallback(file to r)
                     if (r.isNotEmpty()) {
                         results += file to r
                     }

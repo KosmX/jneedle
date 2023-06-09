@@ -9,7 +9,6 @@ import dev.kosmx.needle.lib.Word
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.decodeFromStream
 import org.objectweb.asm.ClassReader
 import org.objectweb.asm.tree.AbstractInsnNode
 import org.objectweb.asm.tree.ClassNode
@@ -26,11 +25,11 @@ object FileParser {
             return when (path.extension) {
                 "jasm" -> {
                     JarFile(path.toFile()).use { jar ->
-                        val info = Json.decodeFromStream<Info>(jar.getInputStream(jar.getJarEntry("info.json")))
+                        val info = Json.decodeFromString<Info>(jar.getInputStream(jar.getJarEntry("info.json")).asString())
 
 
                         val tree = ClassNode()
-                        ClassReader(jar.getInputStream(jar.getJarEntry("content.class")).readAllBytes()).accept(
+                        ClassReader(jar.getInputStream(jar.getJarEntry("content.class")).readBytes()).accept(
                             tree,
                             ClassReader.SKIP_DEBUG
                         )
@@ -63,7 +62,7 @@ object FileParser {
 
                 "asset" -> {
                     path.toFile().inputStream().use {
-                        Json.decodeFromStream<Asset>(it)
+                        Json.decodeFromString<Asset>(it.asString())
                     }
                 }
 

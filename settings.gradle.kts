@@ -5,5 +5,5 @@ pluginManagement {
     }
 }
 
-rootProject.name = "needle-and-magnet"
+rootProject.name = "jneedle"
 include(":compose")
