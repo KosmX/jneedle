@@ -2,69 +2,119 @@ package dev.kosmx.needle.compose
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.Red
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
-import com.darkrockstudios.libraries.mpfilepicker.DirectoryPicker
+import com.darkrockstudios.libraries.mpfilepicker.FilePicker
+import dev.kosmx.needle.CheckWrapper
+import dev.kosmx.needle.ScanResult
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import java.io.File
+import java.nio.file.Path
+import kotlin.io.path.Path
 
-@Preview
-@Composable
-fun App() {
-    var showDirectoryPicker by remember { mutableStateOf(false) }
-    var targetFolder by remember { mutableStateOf("no folder!") }
+object ComposeMain {
+    private var foundFilesResult by mutableStateOf(listOf<ScanResult>())
+    private var loggerText by mutableStateOf("")
 
-    DirectoryPicker(showDirectoryPicker) { path ->
-        showDirectoryPicker = false
-        targetFolder = path ?: targetFolder
-    }
+    @Preview
+    @Composable
+    fun App() {
 
-    MaterialTheme {
-        Column(horizontalAlignment = Alignment.End){
-            //chosen folder as text
-            TextField(
-                targetFolder, onValueChange = {}, readOnly = true,
-                singleLine = true, textStyle = TextStyle(fontSize = TextUnit(20f, TextUnitType.Sp)),
-                modifier = Modifier
-                    .background(
-                        MaterialTheme.colors.surface,
-                        RoundedCornerShape(percent = 50)
-                    )
-                    .padding(10.dp, 10.dp, 10.dp, 5.dp)
-                    .fillMaxWidth(1f)
-            )
-            //row of function buttons
-            Row {
-                LocalTextStyle provides TextStyle()
-                Button(
-                    modifier = Modifier.padding(0.dp, 0.dp, 10.dp, 5.dp),
-                    onClick = { showDirectoryPicker = true}) {
-                    Text("Select folder")
+        var showDirectoryPicker by remember { mutableStateOf(false) }
+        var targetPath by remember { mutableStateOf("C:\\") }
+        var validTarget by remember { mutableStateOf(true) }
+        CheckWrapper.init()
+
+        FilePicker(showDirectoryPicker) { path ->
+            showDirectoryPicker = false
+            targetPath = path?.path ?: targetPath
+            validTarget = File(targetPath).exists()
+        }
+
+        MaterialTheme {
+            Column(horizontalAlignment = Alignment.End) {
+
+                //chosen folder/file as text
+                OutlinedTextField(
+                    targetPath, onValueChange = {
+                        targetPath = it
+                        validTarget = File(targetPath).exists()
+                    },
+                    singleLine = true, textStyle = TextStyle(fontSize = TextUnit(20f, TextUnitType.Sp)),
+                    label = { Text(text = "Choose a file/folder") },
+                    placeholder = { Text(text = "C:\\") },
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        errorBorderColor = Red
+                    ),
+                    isError = !validTarget,
+                    modifier = Modifier
+                        .background(
+                            MaterialTheme.colors.surface,
+                            RoundedCornerShape(percent = 50)
+                        )
+                        .padding(10.dp, 10.dp, 10.dp, 5.dp)
+                        .fillMaxWidth(1f)
+                )
+
+                //row of function buttons
+                Row {
+                    if (!validTarget) {
+                        Text(
+                            modifier = Modifier.padding(top = 15.dp, end = 15.dp),
+                            text = "Invalid folder/file",
+                            textAlign = TextAlign.Center,
+                            color = MaterialTheme.colors.error
+                        )
+                    }
+                    LocalTextStyle provides TextStyle()
+                    Button(
+                        modifier = Modifier.padding(0.dp, 0.dp, 10.dp, 5.dp),
+                        onClick = { showDirectoryPicker = true }) {
+                        Text("Select")
+                    }
+                    Button(colors = ButtonDefaults.buttonColors(Color(85, 187, 47), Color(1f, 1f, 1f)),
+                        modifier = Modifier.padding(0.dp, 0.dp, 10.dp, 5.dp),
+                        onClick = {
+                            callAPIChecker(Path(targetPath))
+                        }) {
+                        Text("Confirm")
+                    }
                 }
-                Button(colors = ButtonDefaults.buttonColors(Color(85, 187, 47), Color(255,255,255)),
-                    modifier = Modifier.padding(0.dp, 0.dp, 10.dp, 5.dp),
-                    onClick = {}) {//TODO: call into API
-                    Text("Confirm")
-                }
+                TextField(
+                    loggerText, onValueChange = {}, readOnly = true,
+                    colors = TextFieldDefaults.textFieldColors(backgroundColor = Color(0.9f, 0.9f, 0.9f)),
+                    modifier = Modifier.padding(10.dp).fillMaxWidth(1f).fillMaxHeight(1f)
+                )
             }
         }
     }
+
+    private fun callAPIChecker(path: Path) {
+        CoroutineScope(Dispatchers.Default).launch {
+            if (path.toFile().let { it.isFile || it.isDirectory })
+                foundFilesResult = CheckWrapper.checkPath(path)
+        }
+    }
+
 }
 
 fun main() = application {
     Window(onCloseRequest = ::exitApplication) {
-        App()
+        ComposeMain.App()
     }
 }
