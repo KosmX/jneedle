@@ -1,6 +1,5 @@
 package dev.kosmx.needle.core
 
-import dev.kosmx.needle.JarCheckResult
 import dev.kosmx.needle.database.AssetMatch
 import java.util.jar.JarEntry
 

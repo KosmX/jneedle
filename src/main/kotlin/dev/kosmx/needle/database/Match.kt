@@ -1,7 +1,6 @@
 package dev.kosmx.needle.database
 
-import dev.kosmx.needle.JarCheckResult
-import org.objectweb.asm.tree.AbstractInsnNode
+import dev.kosmx.needle.core.JarCheckResult
 
 interface Match {
 

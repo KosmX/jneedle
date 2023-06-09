@@ -1,12 +1,12 @@
 package dev.kosmx.needle.database
 
+import dev.kosmx.needle.core.JarCheckMatch
 import org.objectweb.asm.tree.AbstractInsnNode
-import org.objectweb.asm.tree.LabelNode
-import org.objectweb.asm.tree.LineNumberNode
 
 interface ClassMatch : Match {
     fun match(instructions: Sequence<AbstractInsnNode>): Int
 
+    override fun checkResult(): JarCheckMatch
 }
 
 fun Sequence<AbstractInsnNode>.filterMutable() = filterDebugInfo()

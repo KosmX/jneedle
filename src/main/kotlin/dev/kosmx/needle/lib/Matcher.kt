@@ -25,7 +25,7 @@ class Word<T>(val word: Array<T>, private val comparator: (T, T) -> Boolean = { 
          * Matcher check next entry
          * @return true if full match present
          */
-        public fun checkNextChar(char: T): Boolean {
+        fun checkNextChar(char: T): Boolean {
             pos++
             findLoop@ while (pos >= 0) {
                 if (comparator(char, word[pos]) ) {
@@ -67,7 +67,9 @@ class Word<T>(val word: Array<T>, private val comparator: (T, T) -> Boolean = { 
 
 fun <T> Word<T>.match(iterable: Iterable<T>) = match(iterable.asSequence())
 
-fun <T> Word<T>.match(sequence: Sequence<T>): Int {
+fun <T> Word<T>.match(sequence: Sequence<T>): Int = match(sequence.iterator())
+
+fun <T> Word<T>.match(sequence: Iterator<T>): Int {
     val m = matcher()
     var pos = 0
     sequence.forEach {

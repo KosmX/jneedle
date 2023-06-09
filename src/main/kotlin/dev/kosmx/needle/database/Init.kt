@@ -3,6 +3,7 @@ package dev.kosmx.needle.database
 import dev.kosmx.needle.LogLevel
 import dev.kosmx.needle.core.AssetChecker
 import dev.kosmx.needle.core.ClassChecker
+import dev.kosmx.needle.database.hardCodedDetectors.HardCodedDetectors
 import dev.kosmx.needle.log
 import kotlinx.coroutines.*
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -13,7 +14,6 @@ import java.io.IOException
 import java.net.URL
 import java.nio.file.Files
 import java.nio.file.Path
-import java.nio.file.StandardOpenOption
 import kotlin.io.path.name
 import kotlin.io.path.readText
 import kotlin.io.path.writeText
@@ -24,18 +24,14 @@ import kotlin.streams.asSequence
  */
 object Database {
 
-    var database: List<Match> = listOf()
-        get
-        private set
-
 
     fun init(databaseUrl: String?, dataPath: Path) {
+        val database = mutableListOf<Match>()
         try {
             if (databaseUrl != null) {
-                val localDatabase = dataPath.resolve("database")
                 var localDbVersion = -1
                 try {
-                    localDbVersion = localDatabase.resolve("version").readText().toInt()
+                    localDbVersion = dataPath.resolve("version").readText().toInt()
                 } catch (_: IOException) {
                 }
 
@@ -43,21 +39,25 @@ object Database {
                 if (localDbVersion < databaseVersion) {
                     dataPath.resolve("data").toFile().let { if (!it.isDirectory) it.mkdir() }
                     updateDb(databaseUrl, dataPath.resolve("data"))
-                    localDatabase.resolve("version").writeText(databaseVersion.toString())
+                    dataPath.resolve("version").writeText(databaseVersion.toString())
                 }
             }
         } catch (e: Exception) {
-            log(LogLevel.Warning) { "Failed to fetch database: $databaseUrl is not available."}
+            log(LogLevel.Warning) {
+                e.printStackTrace()
+                "Failed to fetch database: $databaseUrl is not available."
+            }
         }
 
         if (dataPath.toFile().isDirectory) {
 
-            database = Files.walk(dataPath.resolve("data")).asSequence().mapNotNull {
+            database += Files.walk(dataPath.resolve("data")).asSequence().mapNotNull {
                 FileParser.parseFile(it)
             }.toList()
         } else {
             TODO("How to list resources form the jar file?!")
         }
+        database += HardCodedDetectors.getHardCodedDetectors()
 
         ClassChecker.init(database.filterIsInstance<ClassMatch>())
         AssetChecker.init(database.filterIsInstance<AssetMatch>())
@@ -68,7 +68,7 @@ object Database {
         val files = URL("$databaseUrl/files.json").openConnection().getInputStream().use {
             Json.decodeFromStream<DatabaseFiles>(it)
         }
-        Files.walk(dataPath).filter { it.name !in files.files }.forEach {
+        Files.walk(dataPath).filter { it.toFile().isFile && it.name !in files.files }.forEach {
             Files.delete(it) // delete outdated things
         }
 

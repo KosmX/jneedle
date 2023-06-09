@@ -26,7 +26,7 @@ object JarChecker {
         return setOf()
     }
 
-    private fun checkJar(jar: JarInputStream): Set<JarCheckResult> {
+    fun checkJar(jar: JarInputStream): Set<JarCheckResult> {
         val results = mutableSetOf<JarCheckResult>()
         for ((jarEntry, bytes) in jar) {
             if (jarEntry.name.endsWith(".class")) {

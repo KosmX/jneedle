@@ -1,4 +1,4 @@
-package dev.kosmx.needle
+package dev.kosmx.needle.core
 
 import kotlinx.serialization.Serializable
 

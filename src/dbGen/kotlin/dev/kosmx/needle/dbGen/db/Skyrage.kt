@@ -1,6 +1,6 @@
 package dev.kosmx.needle.dbGen.db
 
-import dev.kosmx.needle.MatchType
+import dev.kosmx.needle.core.MatchType
 import dev.kosmx.needle.dbGen.dsl.KDSL
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.tree.MethodInsnNode

@@ -1,18 +1,12 @@
 package dev.kosmx.needle
 
+import dev.kosmx.needle.core.JarCheckResult
 import dev.kosmx.needle.core.JarChecker
-import dev.kosmx.needle.database.Database
 import kotlinx.cli.ArgParser
 import kotlinx.cli.ArgType
 import kotlinx.cli.default
 import kotlinx.cli.required
-import kotlinx.coroutines.*
-import java.nio.file.*
-import java.nio.file.attribute.BasicFileAttributes
-import java.util.concurrent.Executors
-import java.util.concurrent.atomic.AtomicInteger
 import kotlin.io.path.Path
-import kotlin.io.path.extension
 
 fun main(args: Array<String>) {
 
@@ -27,21 +21,28 @@ fun main(args: Array<String>) {
     parser.parse(args)
 
 
-    val db = Path(databaseLocation)
-    if (!db.toFile().isDirectory) {
-        db.toFile().mkdirs()
-    }
-    Database.init(databaseUrl, db)
+    CheckWrapper.init(databaseUrl, Path(databaseLocation))
+
 
     val path = Path(file)
     if (path.toFile().isFile) {
         println(JarChecker.checkJar(path.toFile()))
     } else {
 
+        val foundStuff = CheckWrapper.checkPathBlocking(path)
+
+        foundStuff.forEach {(file, founding) ->
+            println("$file matches ${founding.map { it.getMessage() }}")
+        }
+
+        println("Finished running, found ${foundStuff.size}")
+        /**
         val dispatcher = Executors.newFixedThreadPool(threads).asCoroutineDispatcher()
 
         val counter = AtomicInteger(0)
         val foundStuff = AtomicInteger(0)
+
+
         Files.walkFileTree(
             path,
             setOf(FileVisitOption.FOLLOW_LINKS),
@@ -69,8 +70,7 @@ fun main(args: Array<String>) {
             }
         )
 
-        dispatcher.close()
-        println("Finished running, found ${foundStuff.get()}")
+        */
     }
 
 }
