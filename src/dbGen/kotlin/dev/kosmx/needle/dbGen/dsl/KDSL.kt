@@ -1,11 +1,10 @@
 package dev.kosmx.needle.dbGen.dsl
 
-import dev.kosmx.needle.MatchType
+import dev.kosmx.needle.core.MatchType
 import dev.kosmx.needle.database.Info
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.encodeToStream
-import org.objectweb.asm.ClassReader
 import org.objectweb.asm.ClassWriter
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.Opcodes.ACC_PRIVATE
@@ -16,10 +15,8 @@ import org.objectweb.asm.tree.InsnNode
 import org.objectweb.asm.tree.MethodNode
 import org.objectweb.asm.tree.VarInsnNode
 import java.nio.file.Path
-import java.time.Clock
 import java.time.Instant
 import java.util.jar.JarEntry
-import java.util.jar.JarFile
 import java.util.jar.JarOutputStream
 
 interface Entry {

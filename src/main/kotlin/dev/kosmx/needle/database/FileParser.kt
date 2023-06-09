@@ -2,6 +2,9 @@ package dev.kosmx.needle.database
 
 import dev.kosmx.needle.*
 import dev.kosmx.needle.core.InsnComparator
+import dev.kosmx.needle.core.JarCheckMatch
+import dev.kosmx.needle.core.JarCheckResult
+import dev.kosmx.needle.core.MatchType
 import dev.kosmx.needle.lib.Word
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
@@ -32,7 +35,15 @@ object FileParser {
                             ClassReader.SKIP_DEBUG
                         )
 
-                        if (info.filterType) {
+                        if (info.wildcardType) {
+                            WildcardMatch(
+                                info.name,
+                                tree.methods.find { it.name == "pattern" }!!.instructions.toArray(),
+                                info.threat,
+                                info.matchId,
+                                info.filterType,
+                                )
+                        } else if (info.filterType) {
                             MatchFilteredSequence (
                                 info.name,
                                 tree.methods.find { it.name == "pattern" }!!.instructions.toArray().toWord(),
@@ -79,6 +90,7 @@ data class Info(
     val encoded: Boolean = false,
     val matchId: String = "",
     val filterType: Boolean = false,
+    val wildcardType: Boolean = false,
 )
 
 

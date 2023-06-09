@@ -1,11 +1,8 @@
 package dev.kosmx.needle.core
 
-import dev.kosmx.needle.JarCheckResult
 import dev.kosmx.needle.database.ClassMatch
 import org.objectweb.asm.ClassReader
-import org.objectweb.asm.tree.AbstractInsnNode
 import org.objectweb.asm.tree.ClassNode
-import org.objectweb.asm.tree.LineNumberNode
 
 
 object ClassChecker {
@@ -26,7 +23,7 @@ object ClassChecker {
         node.methods.forEach { method ->
             for (word in sequences) {
                 if (word.match(method.instructions.asSequence()) != -1) {
-                    result += word.checkResult()
+                    result += word.checkResult().copy(node = node.name ,method = "${method.name};${method.desc}")
                 }
             }
             method.instructions
