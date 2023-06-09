@@ -161,7 +161,7 @@ object ComposeMain {
 }
 
 fun main() = application {
-    Window(onCloseRequest = ::exitApplication) {
+    Window(onCloseRequest = ::exitApplication, title = "JNeedle Malware Detection Tool") {
         ComposeMain.App()
     }
 }
