@@ -6,11 +6,10 @@ import dev.kosmx.needle.core.ClassChecker
 import dev.kosmx.needle.database.hardCodedDetectors.HardCodedDetectors
 import dev.kosmx.needle.log
 import kotlinx.coroutines.*
-import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.decodeFromStream
 import java.io.IOException
+import java.io.InputStream
 import java.net.URL
 import java.nio.file.Files
 import java.nio.file.Path
@@ -63,10 +62,9 @@ object Database {
         AssetChecker.init(database.filterIsInstance<AssetMatch>())
     }
 
-    @OptIn(ExperimentalSerializationApi::class)
     private fun updateDb(databaseUrl: String, dataPath: Path) {
         val files = URL("$databaseUrl/files.json").openConnection().getInputStream().use {
-            Json.decodeFromStream<DatabaseFiles>(it)
+            Json.decodeFromString<DatabaseFiles>(it.asString())
         }
         Files.walk(dataPath).filter { it.toFile().isFile && it.name !in files.files }.forEach {
             Files.delete(it) // delete outdated things
@@ -88,6 +86,8 @@ object Database {
         }
     }
 }
+
+fun InputStream.asString(): String = String(readBytes())
 
 @Serializable
 data class DatabaseFiles(val files: List<String>)

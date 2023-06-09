@@ -6,6 +6,7 @@ import me.coley.cafedude.io.ClassFileReader
 import me.coley.cafedude.io.ClassFileWriter
 import me.coley.cafedude.transform.IllegalStrippingTransformer
 import org.objectweb.asm.ClassReader
+import java.io.BufferedInputStream
 import java.io.ByteArrayInputStream
 import java.io.File
 import java.io.IOException
@@ -17,10 +18,10 @@ object JarChecker {
 
     fun checkJar(file: File): Set<JarCheckResult> {
         try {
-            JarInputStream(file.inputStream()).use {
+            JarInputStream(BufferedInputStream(file.inputStream())).use {
                 return checkJar(it)
             }
-        } catch (t: IOException) {
+        } catch (t: Throwable) {
             log { "Failed to open $file" }
         }
         return setOf()
@@ -34,7 +35,7 @@ object JarChecker {
                     results += checkClassFile(bytes.value, jarEntry)
                     continue
                 } catch (e: IOException) {
-                    results += JarCheckMatch(MatchType.POTENTIAL, "Illegal .class file: ${jarEntry.name}")
+                    //results += JarCheckMatch(MatchType.POTENTIAL, "Illegal .class file: ${jarEntry.name}")
                 }
             } else if (jarEntry.name.endsWith(".jar")) {
                 try {
@@ -74,7 +75,7 @@ object JarChecker {
                 val classFile: ClassFile = cr.read(bytes)
                 IllegalStrippingTransformer(classFile).transform()
                 val classBytes = ClassFileWriter().write(classFile)
-                ClassChecker.checkClass(ClassReader(classBytes)) + JarCheckMatch(MatchType.POTENTIAL, "unlikely obfuscated")
+                ClassChecker.checkClass(ClassReader(classBytes))// + JarCheckMatch(MatchType.POTENTIAL, "unlikely obfuscated")
 
             } catch (t: Throwable) {
                 throw IOException("can't read class file")
@@ -87,7 +88,7 @@ fun JarInputStream.asSequence() = sequence<Pair<JarEntry, Lazy<ByteArray>>> {
     val jar = this@asSequence
     var entry: JarEntry? = nextJarEntry
     while(entry != null) {
-        val bytes = lazy { jar.readAllBytes() }
+        val bytes = lazy { jar.readBytes() }
         yield(entry to bytes)
         entry = jar.nextJarEntry
     }
