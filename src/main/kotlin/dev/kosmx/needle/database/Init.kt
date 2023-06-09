@@ -3,6 +3,7 @@ package dev.kosmx.needle.database
 import dev.kosmx.needle.LogLevel
 import dev.kosmx.needle.core.AssetChecker
 import dev.kosmx.needle.core.ClassChecker
+import dev.kosmx.needle.database.hardCodedDetectors.HardCodedDetectors
 import dev.kosmx.needle.log
 import kotlinx.coroutines.*
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -13,7 +14,6 @@ import java.io.IOException
 import java.net.URL
 import java.nio.file.Files
 import java.nio.file.Path
-import java.nio.file.StandardOpenOption
 import kotlin.io.path.name
 import kotlin.io.path.readText
 import kotlin.io.path.writeText
@@ -24,12 +24,9 @@ import kotlin.streams.asSequence
  */
 object Database {
 
-    var database: List<Match> = listOf()
-        get
-        private set
-
 
     fun init(databaseUrl: String?, dataPath: Path) {
+        val database = mutableListOf<Match>()
         try {
             if (databaseUrl != null) {
                 var localDbVersion = -1
@@ -54,12 +51,13 @@ object Database {
 
         if (dataPath.toFile().isDirectory) {
 
-            database = Files.walk(dataPath.resolve("data")).asSequence().mapNotNull {
+            database += Files.walk(dataPath.resolve("data")).asSequence().mapNotNull {
                 FileParser.parseFile(it)
             }.toList()
         } else {
             TODO("How to list resources form the jar file?!")
         }
+        database += HardCodedDetectors.getHardCodedDetectors()
 
         ClassChecker.init(database.filterIsInstance<ClassMatch>())
         AssetChecker.init(database.filterIsInstance<AssetMatch>())
