@@ -21,7 +21,7 @@ fun main(args: Array<String>) {
     parser.parse(args)
 
 
-    CheckWrapper.init(databaseUrl, databaseLocation)
+    CheckWrapper.init(databaseUrl, Path(databaseLocation))
 
 
     val path = Path(file)

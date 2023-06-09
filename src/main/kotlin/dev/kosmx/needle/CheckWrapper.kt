@@ -30,9 +30,9 @@ object CheckWrapper {
 
     private val defaultUrl = String(JarCheckResult::class.java.getResourceAsStream("/url")!!.readAllBytes())
     @JvmStatic
-    fun init(databaseUrl: String?, databaseLocation: String = defaultUrl) {
+    fun init(databaseUrl: String? = defaultUrl, databaseLocation: Path = Path(System.getProperty("user.home")).resolve(".jneedle")) {
 
-        val db = Path(databaseLocation)
+        val db = databaseLocation
         if (!db.toFile().isDirectory) {
             db.toFile().mkdirs()
         }
