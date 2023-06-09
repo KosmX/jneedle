@@ -140,7 +140,7 @@ object ComposeMain {
                 val count = IntRef()
                 foundFilesResult = CheckWrapper.checkPath(path,
                     jarVisitCallback = infectedCallback, scannedCount = count)
-                log("Scan finished, $count ${if(count.element == 1) "file was" else "files were"} tested")
+                log("Scan finished, $count ${if(count.element == 1) "file was" else "files were"} tested\n")
         }
     }
 
