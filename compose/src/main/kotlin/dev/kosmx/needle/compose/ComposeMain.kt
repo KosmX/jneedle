@@ -28,6 +28,7 @@ import kotlinx.datetime.*
 import java.io.File
 import java.nio.file.Path
 import kotlin.io.path.Path
+import kotlin.jvm.internal.Ref.IntRef
 
 object ComposeMain {
     private var foundFilesResult by mutableStateOf(listOf<ScanResult>())
@@ -119,13 +120,30 @@ object ComposeMain {
     }
 
     private fun callAPIChecker(path: Path) {
+        val infectedCallback: ((ScanResult) -> Unit) = {
+            //if any infections are found (just to make sure)
+            if(it.second.isNotEmpty()){
+                //log them all
+                log(buildString {
+                    append("Detected the following in ${it.first.name}: ")
+                    it.second.forEach { infection ->
+                        append("${infection.status.name} ")
+                    }
+                })
+            }
+        }
+
+        //start a scan with logging at the start and end
         CoroutineScope(Dispatchers.Default).launch {
             if (path.toFile().let { it.isFile || it.isDirectory })
                 log("Scan started on $path")
-                foundFilesResult = CheckWrapper.checkPath(path)
-                log("Scan finished")
+                val count = IntRef()
+                foundFilesResult = CheckWrapper.checkPath(path,
+                    jarVisitCallback = infectedCallback, scannedCount = count)
+                log("Scan finished, $count ${if(count.element == 1) "file was" else "files were"} tested")
         }
     }
+
     private fun log(s: String){
         val logTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
         val formattedLogTime = logTime.let {
