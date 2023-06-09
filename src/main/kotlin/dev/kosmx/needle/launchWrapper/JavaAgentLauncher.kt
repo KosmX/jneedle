@@ -49,7 +49,6 @@ object JavaAgentLauncher {
                 CheckWrapper.init(databaseUrl, Path(databaseLocation))
             } ?: CheckWrapper.init()
 
-            println(Path(".").toFile().canonicalPath)
             val result = CheckWrapper.checkPathBlocking(Path("."))
             if (result.any { pair -> pair.second.any { it.status != MatchType.INFO } }) {
 
