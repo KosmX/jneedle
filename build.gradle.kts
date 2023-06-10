@@ -9,7 +9,7 @@ plugins {
 java.sourceCompatibility = JavaVersion.VERSION_1_8
 java.targetCompatibility = JavaVersion.VERSION_1_8
 
-group = "dev.kosmx.jarchecker"
+group = "dev.kosmx.needle"
 version = project.property("version") as String
 
 allprojects {

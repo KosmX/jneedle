@@ -15,10 +15,11 @@ fun main(args: Array<String>) {
 
     val defaultUrl = String(JarCheckResult::class.java.getResourceAsStream("/url")!!.readBytes())
 
-    val parser = ArgParser("jar checker")
+    val parser = ArgParser("jNeedle")
+
     val file by parser.option(ArgType.String, shortName = "f", fullName = "file", description = "file or directory").required()
     val databaseUrl by parser.option(ArgType.String, shortName = "u", fullName = "url").default(defaultUrl)
-    val databaseLocation by parser.option(ArgType.String, fullName = "dblocation").default(Path(System.getProperty("user.home")).resolve(".jneedle").toString())
+    val databaseLocation by parser.option(ArgType.String, fullName = "dblocation").default(CheckWrapper.databasePath.toString())
     val threads by parser.option(ArgType.Int, fullName = "threads").default(Runtime.getRuntime().availableProcessors())
 
     parser.parse(args)

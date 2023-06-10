@@ -29,17 +29,25 @@ typealias ScanResult = Pair<File, Set<JarCheckResult>>
 object CheckWrapper {
     private var initialized = false
 
-    private val defaultUrl = System.getProperty("dev.kosmx.jneedle.remoteDatabase") ?: String(JarCheckResult::class.java.getResourceAsStream("/url")!!.readBytes())
+    private val defaultUrl = System.getProperty("dev.kosmx.jneedle.remoteDatabase") ?: String(
+        JarCheckResult::class.java.getResourceAsStream("/url")!!.readBytes()
+    )
+
     @JvmStatic
+    @JvmOverloads
     fun init(
         databaseUrl: String? = defaultUrl,
-        databaseLocation: Path = System.getProperty("dev.kosmx.jneedle.databasePath")?.let{ Path(it) } ?: Path(System.getProperty("user.home")).resolve(".jneedle")
+        databaseLocation: Path = databasePath
     ) {
 
         databaseLocation.toFile().mkdirs()
         Database.init(databaseUrl, databaseLocation)
         initialized = true
     }
+
+    val databasePath: Path
+        get() = System.getProperty("dev.kosmx.jneedle.databasePath")?.let { Path(it) }
+            ?: Path(System.getProperty("user.home")).resolve(".jneedle")
 
     /**
      * Run the check for the given jar file. path has to point to a jar file
@@ -71,6 +79,7 @@ object CheckWrapper {
      * If you're from kotlin, please use the async version
      */
     @JvmStatic
+    @JvmOverloads
     fun checkPathBlocking(
         path: Path,
         threads: Int = Runtime.getRuntime().availableProcessors() * 4
@@ -141,7 +150,7 @@ object CheckWrapper {
 
 
         val results = mutableListOf<ScanResult>()
-        for (i in 0 ..< threads) { // collect the results from all worker threads
+        for (i in 0..<threads) { // collect the results from all worker threads
             results += resultChannel.receive()
         }
         resultChannel.close() // no more results
