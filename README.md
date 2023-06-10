@@ -1,4 +1,4 @@
-﻿# jneedle
+﻿# 🪡 jNeedle (or Needle)
 Yet another jar malware detection tool
 
 ---
@@ -46,4 +46,49 @@ Forge from 1.13.2: `"+jvmArgs": ["-Ddev.kosmx.jneedle.launchClass=io.github.zeke
 1. In the game version menu, click `Add agents`:  
 2. Select jneedle.jar
 3. Done. (It will be slow in large modpacks)
+
+## JVM properties
+Some parameter can be set as a JVM property:  
+`-Ddev.kosmx.jneedle.remoteDatabase` to set online database location.  
+`-Ddev.kosmx.jneedle.remoteDatabase=https://maven.kosmx.dev/dev/kosmx/needles` is default.  
+
+`-Ddev.kosmx.jneedle.databasePath` to set local database cache.  
+`-Ddev.kosmx.jneedle.databasePath=${user.home}/.jneedle` by default.
+
+
+If using `-cp jneedle.jar dev.kosmx.needle.launchWrapper.ParameterizedWrapper`  
+`-Ddev.kosmx.jneedle.launchClass` to set the start class after checking is completed. The application has to be in classpath.  
+(This is for Minecraft wrapper use)
+
+## GUI mode
+There is a gui version, you can simply open it in a graphical environment
+
+## CLI mode
+```text
+> java -jar .\jneedle-1.0.0.jar
+Value for option --file should be always provided in command line.
+Usage: jNeedle options_list
+Options:
+    --file, -f -> file or directory (always required) { String }
+    --url, -u [https://maven.kosmx.dev/dev/kosmx/needles] { String }
+    --dblocation [C:\Users\kosmx\.jneedle] { String }
+    --threads [16] { Int }
+    --help, -h -> Usage info
+```
+
+## API usage:
+<not yet in maven, I'll change that soon>  
+dev.kosmx.needle.CheckWrapper object (static class) has API functions:  
+These can be used from any JVM interop language (ideally Kotlin)  
+First call `CheckWrapper.init()` to initialize database. Optionally database location and file location can be specified
+
+Then the program state is effectively immutable, calling check function is safe from any thread anytime.  
+
+`CheckWrapper.checkJar()` to check a single jar file (extension doesn't have to be jar)  
+`CheckWrapper.checkPathBlocking()` to check jar file or walk directory. Function will return with results once completed.  
+
+  
+`CheckWrapper.checkPath()` with parameters to check path as a coroutine function. It can have feedback while running.  
+This function is kotlin only.
+
 
