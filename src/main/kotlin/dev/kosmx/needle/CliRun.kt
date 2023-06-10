@@ -6,7 +6,9 @@ import kotlinx.cli.ArgParser
 import kotlinx.cli.ArgType
 import kotlinx.cli.default
 import kotlinx.cli.required
+import kotlinx.coroutines.runBlocking
 import kotlin.io.path.Path
+import kotlin.jvm.internal.Ref.IntRef
 import kotlin.time.ExperimentalTime
 import kotlin.time.measureTime
 
@@ -34,14 +36,15 @@ fun main(args: Array<String>) {
     } else {
 
         measureTime {
-            val foundStuff = CheckWrapper.checkPathBlocking(path, threads)
+            val count = IntRef()
+            val foundStuff = runBlocking { CheckWrapper.checkPath(path, threads, scannedCount = count) }
 
 
             foundStuff.forEach { (file, founding) ->
                 println("$file matches ${founding.map { it.getMessage() }}")
             }
 
-            println("Finished running, found ${foundStuff.size}")
+            println("Finished running, checked ${count.element}, found ${foundStuff.size}")
         }.let { println("Malware checking done in ${it.inWholeMilliseconds} ms") }
     }
 
