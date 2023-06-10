@@ -69,7 +69,7 @@ object CheckWrapper {
     fun checkJar(inputStream: InputStream): Set<JarCheckResult> {
         require(initialized) { "Cannot run check before initialization is complete" }
 
-        JarInputStream(inputStream).use {
+        JarInputStream(inputStream, false).use {
             return JarChecker.checkJar(it)
         }
     }

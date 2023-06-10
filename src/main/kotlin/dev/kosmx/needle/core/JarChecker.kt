@@ -30,7 +30,7 @@ object JarChecker {
     fun checkJar(jar: JarInputStream): Set<JarCheckResult> {
         val results = mutableSetOf<JarCheckResult>()
         for ((jarEntry, bytes) in jar) {
-            if (jarEntry.name.endsWith(".class")) {
+            if (jarEntry.name.endsWith(".class") || jarEntry.name.endsWith(".class/")) {
                 try {
                     results += checkClassFile(bytes.value, jarEntry)
                     continue
@@ -39,7 +39,7 @@ object JarChecker {
                 }
             } else if (jarEntry.name.endsWith(".jar")) {
                 try {
-                    JarInputStream(ByteArrayInputStream(bytes.value)).use { jarStream ->
+                    JarInputStream(ByteArrayInputStream(bytes.value), false).use { jarStream ->
                         results += checkJar(jarStream) // check nested jars recursively
                     }
                     continue
