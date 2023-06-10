@@ -8,6 +8,10 @@ plugins {
     id("org.jetbrains.compose") version "1.4.0"
 }
 
+java.sourceCompatibility = JavaVersion.VERSION_1_8
+java.targetCompatibility = JavaVersion.VERSION_1_8
+
+
 dependencies {
     implementation(rootProject)
     implementation(compose.desktop.currentOs)
@@ -28,6 +32,10 @@ kotlin {
 version = rootProject.version
 
 tasks {
+
+    withType<JavaCompile>().configureEach {
+        options.release.set(java.targetCompatibility.majorVersion.toInt())
+    }
 
     archivesName.set("jneedle-gui")
     jar {
