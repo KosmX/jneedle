@@ -9,7 +9,11 @@ import org.objectweb.asm.ClassWriter
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.Opcodes.ACC_PRIVATE
 import org.objectweb.asm.Opcodes.ACC_STATIC
-import org.objectweb.asm.tree.*
+import org.objectweb.asm.tree.AbstractInsnNode
+import org.objectweb.asm.tree.ClassNode
+import org.objectweb.asm.tree.InsnNode
+import org.objectweb.asm.tree.MethodNode
+import org.objectweb.asm.tree.VarInsnNode
 import java.nio.file.Path
 import java.time.Instant
 import java.util.jar.JarEntry
@@ -19,7 +23,7 @@ interface Entry {
     /**
      * Write file and returns filename for later use
      */
-    fun generate(outputPath: Path) : String
+    fun generate(outputPath: Path): String
 }
 
 var idTracker = 0
