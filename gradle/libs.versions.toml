@@ -1,0 +1,213 @@
+[versions]
+kotlin = "1.8.20"
+
+kotlinx-serialization = "1.5.1"
+ktoml = "0.5.0"
+
+kotlinx-coroutines = "1.7.1"
+
+asm = "9.5"
+
+konf = "1.1.2"
+
+fuel = "2.3.1"
+
+junit-jupiter = "5.9.2"
+
+grgit = "4.1.1"
+
+
+[plugins]
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+
+axion-release = { id = "pl.allegro.tech.build.axion-release", version = "1.15.0" }
+
+shadow = { id = "com.github.johnrengelman.shadow", version = "8.1.1" }
+
+dokka = { id = "org.jetbrains.dokka", version.ref = "kotlin" }
+
+compose = { id = "org.jetbrains.compose", version = "1.4.0" }
+
+
+[libraries]
+
+# Kotlin stdlib
+kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlin" }
+kotlin-reflect = { group = "org.jetbrains.kotlin", name = "kotlin-reflect", version.ref = "kotlin" }
+
+# kotlinx.serialization
+kotlinx-serialization-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-core", version.ref = "kotlinx-serialization" }
+kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
+kotlinx-serialization-cbor = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-cbor", version.ref = "kotlinx-serialization" }
+kotlinx-serialization-hocon = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-hocon", version.ref = "kotlinx-serialization" }
+kotlinx-serialization-protobuf = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-protobuf", version.ref = "kotlinx-serialization" }
+
+# TODO: decide whether to use kotlinx.serialization for config or konf (or maybe smth else?)
+# ktoml
+## TOML serialization for kotlinx.serialization
+ktoml-core = { group = "com.akuleshov7", name = "ktoml-core", version.ref = "ktoml" }
+ktoml-source = { group = "com.akuleshov7", name = "ktoml-source", version.ref = "ktoml" }
+ktoml-file = { group = "com.akuleshov7", name = "ktoml-file", version.ref = "ktoml" }
+
+# TODO: decide whether to use kotlinx.serialization for config or konf (or maybe smth else?)
+# Kaml
+## YAML serialization for kotlinx.serialization
+kaml = { group = "com.charleskorn.kaml", name = "kaml", version = "0.54.0" }
+
+
+# kotlinx.coroutines
+kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
+kotlinx-coroutines-jdk8 = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-jdk8", version.ref = "kotlinx-coroutines" }
+kotlinx-coroutines-slf4j = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-slf4j", version.ref = "kotlinx-coroutines" }
+kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
+kotlinx-coroutines-debug = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-debug", version.ref = "kotlinx-coroutines" }
+
+
+kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version = "0.4.0" }
+
+
+# kotlinx-cli
+## Pure Kotlin implementation of a generic command-line parser.
+kotlinx-cli = { group = "org.jetbrains.kotlinx", name = "kotlinx-cli", version = "0.3.5" }
+
+
+# Clikt
+## Multiplatform Kotlin Library for writing CLI interfaces
+clikt = { group = "com.github.ajalt.clikt", name = "clikt", version = "3.5.2" }
+
+
+# TODO: decide whether to use kotlinx.serialization for config or konf (or maybe smth else?)
+# Konf
+## Type-safe cascading configuration library for Kotlin
+konf-core = { group = "com.uchuhimo", name = "konf-core", version.ref = "konf" }
+konf-hocon = { group = "com.uchuhimo", name = "konf-hocon", version.ref = "konf" }
+konf-toml = { group = "com.uchuhimo", name = "konf-toml", version.ref = "konf" }
+konf-yaml = { group = "com.uchuhimo", name = "konf-yaml", version.ref = "konf" }
+
+
+# Jetbrains Annotations
+## Annotations for documentation and static code analysis
+jetbrains-annotations = { group = "org.jetbrains", name = "annotations", version = "24.0.1" }
+
+
+# ASM
+## All purpose Java bytecode manipulation and analysis framework
+asm = { group = "org.ow2.asm", name = "asm", version.ref = "asm" }
+asm-tree = { group = "org.ow2.asm", name = "asm-tree", version.ref = "asm" }
+
+
+# CAFED00D
+## Another class library with a focus on obfuscation support
+cafedude = { group = "com.github.Col-E", name = "CAFED00D", version = "1.10.2" }
+
+
+# LLJ-ZIP
+## A closer to the spec implementation of ZIP parsing for Java.
+lljzip = { group = "software.coley", name = "lljzip", version = "1.4.0" }
+
+
+
+# Okio
+##  A modern I/O library for Android, Java, and Kotlin Multiplatform.
+okio = { group = "com.squareup.okio", name = "okio", version = "3.3.0" }
+
+
+# SLF4J
+## Simple Logging Facade for Java
+slf4j = { group = "org.slf4j", name = "slf4j-api", version = "2.0.7" }
+# SLF4K
+## SLF4K is a set of kotlin extensions for SLF4J
+slf4k = { group = "ca.solo-studios", name = "slf4k", version = "0.5.3" }
+# Logback
+## The reliable, generic, fast and flexible logging framework for Java
+logback = { group = "ch.qos.logback", name = "logback-classic", version = "1.3.7" }
+
+
+# Fuel
+## The easiest HTTP networking library for Kotlin/Android
+fuel-core = { group = "com.github.kittinunf.fuel", name = "fuel", version.ref = "fuel" }
+fuel-coroutines = { group = "com.github.kittinunf.fuel", name = "fuel-coroutines", version.ref = "fuel" }
+fuel-kotlinx-serialization = { group = "com.github.kittinunf.fuel", name = "fuel-kotlinx-serialization", version.ref = "fuel" }
+
+
+# Guava
+## A set of core Java libraries from Google that includes new collection types, immutable collections, a graph library,
+##      and utilities for concurrency, I/O, hashing, caching, primitives, strings, and more
+guava = { group = "com.google.guava", name = "guava", version = "31.1-jre" }
+# Guava Kotlin
+## A wrapper around Guava to make it more idiomatic in kotlin
+guava-kotlin = { group = "ca.solo-studios", name = "guava-kotlin", version = "0.1.0" }
+
+
+# DSI Utilities
+## A mishmash of utility classes accumulated during the last twenty years in projects developed at the DSI
+dsi-dsiutils = { group = "it.unimi.dsi", name = "dsiutils", version = "2.7.3" }
+# fastutil
+## fastutil extends the Java Collections Framework by providing type-specific maps, sets, lists and queues
+dsi-fastutil = { group = "it.unimi.dsi", name = "fastutil", version = "8.5.12" }
+
+
+# Apache Commons
+commons-compress = { group = "org.apache.commons", name = "commons-compress", version = "1.23.0" }
+commons-io = { group = "commons-io", name = "commons-io", version = "2.13.0" }
+commons-codec = { group = "commons-codec", name = "commons-codec", version = "1.15" }
+commons-math = { group = "org.apache.commons", name = "commons-math3", version = "3.6.1" }
+# when 4.0.0 is released, commons-math is being split into:
+# - commons-numbers
+# - commons-geometry
+# - commons-statistics
+# - commons-rng
+commons-lang = { group = "org.apache.commons", name = "commons-lang3", version = "3.12.0" }
+commons-text = { group = "org.apache.commons", name = "commons-text", version = "1.10.0" }
+
+
+mpfilepicker-desktop = { group = "com.darkrockstudios", name = "mpfilepicker-desktop", version = "1.1.0" }
+
+
+# JUnit
+## Unit testing framework for Java
+junit-jupiter-api = { group = "org.junit.jupiter", name = "junit-jupiter-api", version.ref = "junit-jupiter" }
+junit-jupiter-engine = { group = "org.junit.jupiter", name = "junit-jupiter-engine", version.ref = "junit-jupiter" }
+junit-jupiter-params = { group = "org.junit.jupiter", name = "junit-jupiter-params", version.ref = "junit-jupiter" }
+
+
+[bundles]
+kotlinx-serialization = [
+    "kotlinx-serialization-core",
+    "kotlinx-serialization-json",
+]
+
+kotlinx-coroutines = [
+    "kotlinx-coroutines-core",
+    "kotlinx-coroutines-jdk8",
+    "kotlinx-coroutines-slf4j",
+]
+kotlinx-coroutines-debugging = [
+    "kotlinx-coroutines-test",
+    "kotlinx-coroutines-debug",
+]
+
+konf = [
+    "konf-core",
+    "konf-hocon",
+    "konf-toml",
+    "konf-yaml",
+]
+
+asm = [
+    "asm",
+    "asm-tree",
+]
+
+fuel = [
+    "fuel-core",
+    "fuel-coroutines",
+    "fuel-kotlinx-serialization",
+]
+
+junit = [
+    "junit-jupiter-api",
+    "junit-jupiter-engine",
+    "junit-jupiter-params",
+]
