@@ -73,18 +73,6 @@ publishing {
 
             credentials(PasswordCredentials::class)
         }
-        maven {
-            name = "SoloStudios"
-
-            val releasesUrl = uri("https://maven.solo-studios.ca/releases/")
-            val snapshotUrl = uri("https://maven.solo-studios.ca/snapshots/")
-            url = if (isSnapshot) snapshotUrl else releasesUrl
-
-            credentials(PasswordCredentials::class)
-            authentication { // publishing doesn't work without this for some reason
-                create<BasicAuthentication>("basic")
-            }
-        }
     }
 }
 
