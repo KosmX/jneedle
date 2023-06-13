@@ -1,5 +1,6 @@
 package dev.kosmx.needle.core
 
+import dev.kosmx.needle.CheckWrapper
 import dev.kosmx.needle.LogLevel
 import dev.kosmx.needle.log
 import me.coley.cafedude.classfile.ClassFile
@@ -13,8 +14,6 @@ import software.coley.llzip.format.model.LocalFileHeader
 import software.coley.llzip.format.model.ZipArchive
 import software.coley.llzip.util.ByteData
 import software.coley.llzip.util.ByteDataUtil
-import java.io.BufferedInputStream
-import java.io.ByteArrayInputStream
 import java.io.File
 import java.io.IOException
 import java.util.jar.JarEntry

@@ -39,6 +39,8 @@ dependencies {
 
     implementation(libs.cafedude)
 
+    implementation(libs.lljzip)
+
     implementation(libs.slf4j)
     implementation(libs.slf4k)
     implementation(libs.logback)
