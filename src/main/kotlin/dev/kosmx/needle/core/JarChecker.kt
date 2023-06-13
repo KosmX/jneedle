@@ -6,6 +6,12 @@ import me.coley.cafedude.io.ClassFileReader
 import me.coley.cafedude.io.ClassFileWriter
 import me.coley.cafedude.transform.IllegalStrippingTransformer
 import org.objectweb.asm.ClassReader
+import software.coley.llzip.ZipIO
+import software.coley.llzip.format.compression.ZipCompressions
+import software.coley.llzip.format.model.LocalFileHeader
+import software.coley.llzip.format.model.ZipArchive
+import software.coley.llzip.util.ByteData
+import software.coley.llzip.util.ByteDataUtil
 import java.io.BufferedInputStream
 import java.io.ByteArrayInputStream
 import java.io.File
@@ -18,52 +24,58 @@ object JarChecker {
 
     fun checkJar(file: File): Set<JarCheckResult> {
         try {
-            JarInputStream(BufferedInputStream(file.inputStream())).use {
-                return checkJar(it)
+            ZipIO.readJvm(file.toPath()).use { jar ->
+                return CheckWrapper.checkJar(jar)
             }
         } catch (t: Throwable) {
-            log { "Failed to open $file" }
+            log {
+                t.printStackTrace()
+                "Failed to open $file"
+            }
         }
         return setOf()
     }
 
-    fun checkJar(jar: JarInputStream): Set<JarCheckResult> {
+    fun checkJar(jar: ZipArchive): Set<JarCheckResult> {
         val results = mutableSetOf<JarCheckResult>()
-        for ((jarEntry, bytes) in jar) {
-            if (jarEntry.name.endsWith(".class") || jarEntry.name.endsWith(".class/")) {
-                try {
-                    results += checkClassFile(bytes.value, jarEntry)
-                    continue
-                } catch (e: IOException) {
-                    //results += JarCheckMatch(MatchType.POTENTIAL, "Illegal .class file: ${jarEntry.name}")
-                }
-            } else if (jarEntry.name.endsWith(".jar")) {
-                try {
-                    JarInputStream(ByteArrayInputStream(bytes.value), false).use { jarStream ->
-                        results += checkJar(jarStream) // check nested jars recursively
+        for ((jarEntry, byteData) in jar) {
+            byteData.let classEntry@{_ ->
+                val bytes = lazy { ByteDataUtil.toByteArray(byteData)!! }
+                if (jarEntry.fileNameAsString.endsWith(".class") || jarEntry.fileNameAsString.endsWith(".class/")) {
+                    try {
+                        results += checkClassFile(bytes.value, jarEntry)
+                        return@classEntry
+                    } catch (e: IOException) {
+                        //results += JarCheckMatch(MatchType.POTENTIAL, "Illegal .class file: ${jarEntry.name}")
                     }
-                    continue
+                } else if (jarEntry.fileNameAsString.endsWith(".jar")) {
+                    try {
+
+                        ZipIO.readJvm(byteData).use { jar ->
+                            results += CheckWrapper.checkJar(jar)
+                        }
+                        return@classEntry
+                    } catch (t: Throwable) {
+                        results += JarCheckMatch(MatchType.INFO, "Failed to open nested jar: ${t.message}")
+                        log(LogLevel.Info) {
+                            t.printStackTrace()
+                            t.message ?: ""
+                        }
+                    }
+                }
+
+                try {
+                    results += AssetChecker.checkAsset(bytes, jarEntry)
                 } catch (t: Throwable) {
-                    results += JarCheckMatch(MatchType.INFO, "Failed to open nested jar: ${t.message}")
-                    log(LogLevel.Info) {
-                        t.printStackTrace()
-                        t.message ?: ""
-                    }
+                    results += JarCheckMatch(MatchType.INFO, "Asset checker failed: ${t.message}")
                 }
             }
-
-            try {
-                results += AssetChecker.checkAsset(bytes, jarEntry)
-            } catch (t: Throwable) {
-                results += JarCheckMatch(MatchType.INFO, "Asset checker failed: ${t.message}")
-            }
-
         }
 
         return results
     }
 
-    private fun checkClassFile(bytes: ByteArray, jarEntry: JarEntry): Set<JarCheckResult> {
+    private fun checkClassFile(bytes: ByteArray, jarEntry: LocalFileHeader): Set<JarCheckResult> {
         try {
             val classReader = ClassReader(bytes)
 
@@ -95,3 +107,8 @@ fun JarInputStream.asSequence() = sequence<Pair<JarEntry, Lazy<ByteArray>>> {
 }
 
 operator fun JarInputStream.iterator(): Iterator<Pair<JarEntry, Lazy<ByteArray>>> = this.asSequence().iterator()
+
+fun ZipArchive.asSequence() = localFiles.asSequence().map { it to ZipCompressions.decompress(it) }
+
+operator fun ZipArchive.iterator(): Iterator<Pair<LocalFileHeader, ByteData>> = this.asSequence().iterator()
+

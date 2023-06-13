@@ -8,7 +8,7 @@ import kotlinx.cli.default
 import kotlinx.cli.required
 import kotlinx.coroutines.runBlocking
 import kotlin.io.path.Path
-import kotlin.jvm.internal.Ref
+import kotlin.jvm.internal.Ref.IntRef
 import kotlin.time.ExperimentalTime
 import kotlin.time.measureTime
 
@@ -36,7 +36,7 @@ fun main(args: Array<String>) {
     } else {
 
         measureTime {
-            val count = Ref.IntRef()
+            val count = IntRef()
             val foundStuff = runBlocking { CheckWrapper.checkPath(path, threads, scannedCount = count) }
 
 

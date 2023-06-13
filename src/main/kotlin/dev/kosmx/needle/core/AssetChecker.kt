@@ -1,6 +1,7 @@
 package dev.kosmx.needle.core
 
 import dev.kosmx.needle.database.AssetMatch
+import software.coley.llzip.format.model.LocalFileHeader
 import java.util.jar.JarEntry
 
 /**
@@ -10,7 +11,7 @@ object AssetChecker {
 
     private lateinit var assets: List<AssetMatch>
 
-    fun checkAsset(bytes: Lazy<ByteArray>, asset: JarEntry): Set<JarCheckResult> {
+    fun checkAsset(bytes: Lazy<ByteArray>, asset: LocalFileHeader): Set<JarCheckResult> {
 
         val result = mutableSetOf<JarCheckResult>()
 

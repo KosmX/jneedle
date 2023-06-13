@@ -8,6 +8,8 @@ import dev.kosmx.needle.database.Database
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
+import software.coley.llzip.ZipIO
+import software.coley.llzip.format.model.ZipArchive
 import java.io.File
 import java.io.InputStream
 import java.nio.file.Path
@@ -57,8 +59,8 @@ object CheckWrapper {
     fun checkJar(path: Path): Set<JarCheckResult> {
         require(initialized) { "Cannot run check before initialization is complete" }
 
-        path.toFile().inputStream().use {
-            return checkJar(it)
+        ZipIO.readJvm(path).use { jar ->
+            return checkJar(jar)
         }
     }
 
@@ -66,12 +68,10 @@ object CheckWrapper {
      * Check jar input stream, can be used from memory files or web API backend
      */
     @JvmStatic
-    fun checkJar(inputStream: InputStream): Set<JarCheckResult> {
+    fun checkJar(zipArchive: ZipArchive): Set<JarCheckResult> {
         require(initialized) { "Cannot run check before initialization is complete" }
 
-        JarInputStream(inputStream, false).use {
-            return JarChecker.checkJar(it)
-        }
+        return JarChecker.checkJar(zipArchive)
     }
 
     /**

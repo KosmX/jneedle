@@ -12,6 +12,7 @@ import kotlinx.serialization.json.Json
 import org.objectweb.asm.ClassReader
 import org.objectweb.asm.tree.AbstractInsnNode
 import org.objectweb.asm.tree.ClassNode
+import software.coley.llzip.format.model.LocalFileHeader
 import java.nio.file.Path
 import java.util.*
 import java.util.jar.JarEntry
@@ -98,8 +99,8 @@ data class Info(
 data class Asset(val name: String, val threat: MatchType = MatchType.POTENTIAL, val data: String? = null, val fileName: String? = null) :
     AssetMatch {
     private val bytes by lazy { data?.let { Base64.getDecoder().decode(it) } }
-    override fun match(data: Lazy<ByteArray>, jarEntry: JarEntry): Boolean {
-        if (fileName != null && jarEntry.name != name) return false
+    override fun match(data: Lazy<ByteArray>, jarEntry: LocalFileHeader): Boolean {
+        if (fileName != null && jarEntry.fileNameAsString != name) return false
 
         return if (bytes != null) {
             data.value.contentEquals(bytes)
