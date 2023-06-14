@@ -1,13 +1,13 @@
 package dev.kosmx.needle.database
 
-import dev.kosmx.needle.LogLevel
 import dev.kosmx.needle.core.AssetChecker
 import dev.kosmx.needle.core.ClassChecker
 import dev.kosmx.needle.database.hardCodedDetectors.HardCodedDetectors
-import dev.kosmx.needle.log
+import dev.kosmx.needle.logger
 import kotlinx.coroutines.*
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import org.slf4j.kotlin.warn
 import java.io.IOException
 import java.io.InputStream
 import java.net.URL
@@ -42,7 +42,7 @@ object Database {
                 }
             }
         } catch (e: Exception) {
-            log(LogLevel.Warning) {
+            logger.warn {
                 e.printStackTrace()
                 "Failed to fetch database: $databaseUrl is not available."
             }

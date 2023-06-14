@@ -42,6 +42,7 @@ publishing {
                         id.set("kosmx")
                         name.set("KosmX")
                         email.set("kosmx.mc@gmail.com")
+                        url.set("https://kosmx.dev/")
                     }
 
                     developer {

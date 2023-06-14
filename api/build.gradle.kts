@@ -1,21 +1,16 @@
 plugins {
-    application
 
-    kotlin("jvm")
+    jneedle.compilation
     alias(libs.plugins.kotlin.serialization)
 
-    alias(libs.plugins.shadow)
+    //alias(libs.plugins.shadow)
 
     jneedle.repositories
     jneedle.tasks
     jneedle.publishing
-    jneedle.compilation
     jneedle.dokka
 }
 
-val mainClassName = "dev.kosmx.needle.CliRunKt"
-ext["mainClass"] = mainClassName
-application.mainClass.set(mainClassName)
 
 sourceSets {
     val main by getting
@@ -43,7 +38,7 @@ dependencies {
 
     implementation(libs.slf4j)
     implementation(libs.slf4k)
-    implementation(libs.logback)
+    "dbGenImplementation"(libs.logback) // API doesn't need a logger backend
 
     testImplementation(kotlin("test"))
 }
@@ -52,20 +47,7 @@ dependencies {
 tasks {
     withType<Jar>().configureEach {
         manifest {
-            val javaAgent = "dev.kosmx.needle.launchWrapper.JavaAgentLauncher"
-            attributes(
-                "Premain-Class" to javaAgent,
-                "Agent-Class" to javaAgent,
-                "Can-Redefine-Classes" to "false",
-                "Can-Retransform-Classes" to "false",
-            )
         }
-    }
-
-    shadowJar {
-        relocate("kotlin", "dev.kosmx.needle.kotlin")
-        relocate("kotlinx", "dev.kosmx.needle.kotlinx")
-        relocate("org.slf4j", "dev.kosmx.needle.org.slf4j")
     }
 
     // TODO: 2023-06-12 buildDb should be a subproject, or possibly a build script thingy

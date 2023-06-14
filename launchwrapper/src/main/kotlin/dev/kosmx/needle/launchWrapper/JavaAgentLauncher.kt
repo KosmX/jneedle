@@ -1,9 +1,9 @@
 package dev.kosmx.needle.launchWrapper
 
 import dev.kosmx.needle.CheckWrapper
-import dev.kosmx.needle.LogLevel
 import dev.kosmx.needle.core.MatchType
-import dev.kosmx.needle.log
+import dev.kosmx.needle.logger
+import org.slf4j.kotlin.warn
 import java.lang.instrument.Instrumentation
 import kotlin.io.path.Path
 import kotlin.system.exitProcess
@@ -23,13 +23,12 @@ object JavaAgentLauncher {
     @JvmStatic
     fun agentmain(agentArgs: String?, inst: Instrumentation) {
         if (!checked) {
-            log(LogLevel.Warning) { "Dynamically loading malware detection is risky, it may load after malware class is active" }
+            logger.warn { "Dynamically loading malware detection is risky, it may load after malware class is active" }
             runCheck(agentArgs)
             checked = true
         }
     }
 
-    @OptIn(ExperimentalTime::class)
     private fun runCheck(agentArgs: String?) {
         try {
             println("arg: $agentArgs")

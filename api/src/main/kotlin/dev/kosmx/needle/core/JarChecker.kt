@@ -1,23 +1,21 @@
 package dev.kosmx.needle.core
 
 import dev.kosmx.needle.CheckWrapper
-import dev.kosmx.needle.LogLevel
-import dev.kosmx.needle.log
+import dev.kosmx.needle.logger
 import me.coley.cafedude.classfile.ClassFile
 import me.coley.cafedude.io.ClassFileReader
 import me.coley.cafedude.io.ClassFileWriter
 import me.coley.cafedude.transform.IllegalStrippingTransformer
 import org.objectweb.asm.ClassReader
+import org.slf4j.kotlin.info
+import org.slf4j.kotlin.warn
 import software.coley.llzip.ZipIO
 import software.coley.llzip.format.compression.ZipCompressions
 import software.coley.llzip.format.model.LocalFileHeader
 import software.coley.llzip.format.model.ZipArchive
-import software.coley.llzip.util.ByteData
 import software.coley.llzip.util.ByteDataUtil
 import java.io.File
 import java.io.IOException
-import java.util.jar.JarEntry
-import java.util.jar.JarInputStream
 
 
 object JarChecker {
@@ -28,7 +26,7 @@ object JarChecker {
                 return CheckWrapper.checkJar(jar)
             }
         } catch (t: Throwable) {
-            log {
+            logger.warn {
                 t.printStackTrace()
                 "Failed to open $file"
             }
@@ -38,38 +36,38 @@ object JarChecker {
 
     fun checkJar(jar: ZipArchive): Set<JarCheckResult> {
         val results = mutableSetOf<JarCheckResult>()
-        for ((jarEntry, byteData) in jar) {
-            byteData.let classEntry@{_ ->
-                val bytes = lazy { ByteDataUtil.toByteArray(byteData)!! }
-                if (jarEntry.fileNameAsString.endsWith(".class") || jarEntry.fileNameAsString.endsWith(".class/")) {
-                    try {
-                        results += checkClassFile(bytes.value, jarEntry)
-                        return@classEntry
-                    } catch (e: IOException) {
-                        //results += JarCheckMatch(MatchType.POTENTIAL, "Illegal .class file: ${jarEntry.name}")
-                    }
-                } else if (jarEntry.fileNameAsString.endsWith(".jar")) {
-                    try {
-
-                        ZipIO.readJvm(byteData).use { jar ->
-                            results += CheckWrapper.checkJar(jar)
-                        }
-                        return@classEntry
-                    } catch (t: Throwable) {
-                        results += JarCheckMatch(MatchType.INFO, "Failed to open nested jar: ${t.message}")
-                        log(LogLevel.Info) {
-                            t.printStackTrace()
-                            t.message ?: ""
-                        }
-                    }
-                }
-
+        classEntry@for (jarEntry in jar) {
+            val byteData by lazy { ZipCompressions.decompress(jarEntry) }
+            val bytes = lazy { ByteDataUtil.toByteArray(byteData)!! }
+            if (jarEntry.fileNameAsString.endsWith(".class") || jarEntry.fileNameAsString.endsWith(".class/")) {
                 try {
-                    results += AssetChecker.checkAsset(bytes, jarEntry)
+                    results += checkClassFile(bytes.value, jarEntry)
+                    continue@classEntry
+                } catch (e: IOException) {
+                    //results += JarCheckMatch(MatchType.POTENTIAL, "Illegal .class file: ${jarEntry.name}")
+                }
+            } else if (jarEntry.fileNameAsString.endsWith(".jar")) {
+                try {
+
+                    ZipIO.readJvm(byteData).use { nestedJar ->
+                        results += CheckWrapper.checkJar(nestedJar)
+                    }
+                    continue@classEntry
                 } catch (t: Throwable) {
-                    results += JarCheckMatch(MatchType.INFO, "Asset checker failed: ${t.message}")
+                    results += JarCheckMatch(MatchType.INFO, "Failed to open nested jar: ${t.message}")
+                    logger.info {
+                        t.printStackTrace()
+                        t.message ?: ""
+                    }
                 }
             }
+
+            try {
+                results += AssetChecker.checkAsset(bytes, jarEntry)
+            } catch (t: Throwable) {
+                results += JarCheckMatch(MatchType.INFO, "Asset checker failed: ${t.message}")
+            }
+
         }
 
         return results
@@ -96,19 +94,7 @@ object JarChecker {
     }
 }
 
-fun JarInputStream.asSequence() = sequence<Pair<JarEntry, Lazy<ByteArray>>> {
-    val jar = this@asSequence
-    var entry: JarEntry? = nextJarEntry
-    while(entry != null) {
-        val bytes = lazy { jar.readBytes() }
-        yield(entry to bytes)
-        entry = jar.nextJarEntry
-    }
-}
+fun ZipArchive.asSequence() = localFiles.asSequence().map { it }
 
-operator fun JarInputStream.iterator(): Iterator<Pair<JarEntry, Lazy<ByteArray>>> = this.asSequence().iterator()
-
-fun ZipArchive.asSequence() = localFiles.asSequence().map { it to ZipCompressions.decompress(it) }
-
-operator fun ZipArchive.iterator(): Iterator<Pair<LocalFileHeader, ByteData>> = this.asSequence().iterator()
+operator fun ZipArchive.iterator(): Iterator<LocalFileHeader> = this.asSequence().iterator()
 

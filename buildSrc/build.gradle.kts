@@ -4,7 +4,6 @@ plugins {
 }
 
 repositories {
-    maven("https://maven.solo-studios.ca/releases/")
     mavenCentral()
     // for kotlin-dsl plugin
     gradlePluginPortal()
@@ -30,7 +29,7 @@ kotlin {
 dependencies {
     implementation(gradlePlugin("org.jetbrains.dokka", libs.versions.kotlin))
     implementation(gradlePlugin("org.jetbrains.kotlin.jvm", libs.versions.kotlin))
-    implementation(gradlePlugin("org.ajoberstar.grgit", libs.versions.grgit))
+    implementation(gradlePlugin("com.github.johnrengelman.shadow", libs.versions.shadow))
 }
 
 fun gradlePlugin(id: String, version: Provider<String>): String {

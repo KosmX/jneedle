@@ -1,15 +1,13 @@
 plugins {
-    kotlin("jvm")
+    jneedle.compilation
     alias(libs.plugins.kotlin.serialization)
-
-    alias(libs.plugins.shadow)
 
     alias(libs.plugins.compose)
 
+    jneedle.shadow
     jneedle.repositories
     jneedle.tasks
     jneedle.publishing
-    jneedle.compilation
 }
 
 version = rootProject.version
@@ -19,6 +17,7 @@ ext["mainClass"] = mainClassName
 
 dependencies {
     implementation(projects.api)
+    implementation(libs.logback)
 
     implementation(compose.desktop.currentOs)
 

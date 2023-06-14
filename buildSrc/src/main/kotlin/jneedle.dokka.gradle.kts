@@ -9,8 +9,6 @@ import java.time.Year
 
 plugins {
     id("org.jetbrains.dokka")
-
-    id("org.ajoberstar.grgit")
 }
 
 tasks {

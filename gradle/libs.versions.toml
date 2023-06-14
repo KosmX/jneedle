@@ -16,6 +16,8 @@ junit-jupiter = "5.9.2"
 
 grgit = "4.1.1"
 
+shadow = "8.1.1"
+
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
@@ -23,7 +25,7 @@ kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", versi
 
 axion-release = { id = "pl.allegro.tech.build.axion-release", version = "1.15.0" }
 
-shadow = { id = "com.github.johnrengelman.shadow", version = "8.1.1" }
+shadow = { id = "com.github.johnrengelman.shadow", version.ref = "shadow" }
 
 dokka = { id = "org.jetbrains.dokka", version.ref = "kotlin" }
 
@@ -104,7 +106,7 @@ cafedude = { group = "com.github.Col-E", name = "CAFED00D", version = "1.10.2" }
 
 # LLJ-ZIP
 ## A closer to the spec implementation of ZIP parsing for Java.
-lljzip = { group = "software.coley", name = "lljzip", version = "1.4.0" }
+lljzip = { group = "software.coley", name = "lljzip", version = "1.6.0" }
 
 
 

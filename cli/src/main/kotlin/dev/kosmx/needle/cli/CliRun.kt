@@ -1,5 +1,6 @@
-package dev.kosmx.needle
+package dev.kosmx.needle.cli
 
+import dev.kosmx.needle.CheckWrapper
 import dev.kosmx.needle.core.JarCheckResult
 import dev.kosmx.needle.core.JarChecker
 import kotlinx.cli.ArgParser

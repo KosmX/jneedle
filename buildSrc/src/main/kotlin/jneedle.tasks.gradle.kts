@@ -1,5 +1,3 @@
-import org.jetbrains.dokka.gradle.DokkaTask
-import java.time.Year
 import kotlin.math.max
 
 plugins {
@@ -33,10 +31,14 @@ tasks {
         doLast {
             manifest {
                 attributes(
-                    "Main-Class" to ext["mainClass"],
                     "Implementation-Title" to project.fullName,
                     "Implementation-Version" to project.version.toString(),
                 )
+                if (ext.has("mainClass")) {
+                    attributes(
+                        "Main-Class" to ext["mainClass"],
+                    )
+                }
             }
         }
     }

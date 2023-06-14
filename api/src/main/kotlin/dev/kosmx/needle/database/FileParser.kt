@@ -1,22 +1,21 @@
 package dev.kosmx.needle.database
 
-import dev.kosmx.needle.LogLevel
 import dev.kosmx.needle.core.InsnComparator
 import dev.kosmx.needle.core.JarCheckMatch
 import dev.kosmx.needle.core.JarCheckResult
 import dev.kosmx.needle.core.MatchType
 import dev.kosmx.needle.lib.Word
-import dev.kosmx.needle.log
+import dev.kosmx.needle.logger
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import org.objectweb.asm.ClassReader
 import org.objectweb.asm.tree.AbstractInsnNode
 import org.objectweb.asm.tree.ClassNode
+import org.slf4j.kotlin.error
 import software.coley.llzip.format.model.LocalFileHeader
 import java.nio.file.Path
 import java.util.*
-import java.util.jar.JarEntry
 import java.util.jar.JarFile
 import kotlin.io.path.extension
 
@@ -71,7 +70,7 @@ object FileParser {
                 else -> null
             }
         } catch (e: Exception) {
-            log(LogLevel.Error) {
+            logger.error {
                 e.printStackTrace()
                 "Failed to load database entry: $path reason: ${e.message}"
             }

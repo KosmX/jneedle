@@ -10,7 +10,8 @@ plugins {
 
 rootProject.name = "jneedle"
 include(":api")
-//include(":cli") // TODO: 2023-06-12 Move cli shit into cli
+include(":cli")
+include(":launchwrapper")
 include(":gui")
 
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
