@@ -1,7 +1,7 @@
 package dev.kosmx.needle.dbGen.db
 
-import dev.kosmx.needle.core.MatchType
 import dev.kosmx.needle.dbGen.dsl.KDSL
+import dev.kosmx.needle.matcher.result.Severity
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.tree.LdcInsnNode
 import org.objectweb.asm.tree.MethodInsnNode
@@ -9,7 +9,7 @@ import org.objectweb.asm.tree.TypeInsnNode
 
 fun KDSL.skyrage() {
     malwareId = "Skyrage"
-    type = MatchType.MALWARE
+    type = Severity.SEVERE
 
     "Upd1" byteCodeEntry {
         autoFilerInstructions = true
