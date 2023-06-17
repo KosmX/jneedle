@@ -24,7 +24,7 @@ import androidx.compose.ui.window.application
 import com.darkrockstudios.libraries.mpfilepicker.DirectoryPicker
 import com.darkrockstudios.libraries.mpfilepicker.FilePicker
 import dev.kosmx.needle.CheckWrapper
-import dev.kosmx.needle.ScanResult
+import dev.kosmx.needle.matcher.result.ScanResult
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

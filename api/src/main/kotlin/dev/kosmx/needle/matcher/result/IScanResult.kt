@@ -8,6 +8,9 @@ interface IScanResult {
     val severity: Severity
     val extra: String
         get() = ""
+
+    fun getMessage(): String =
+        if (extra.isEmpty()) "$severity($malware, rule=$rule)" else "$severity($malware, rule=$rule, info=$extra)"
 }
 
 
