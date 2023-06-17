@@ -38,7 +38,6 @@ open class MatchSequence(
     ) :
             this(id, Word(instructions, InsnComparator()::compare), matchType, matchId = matchId)
 
-    private fun checkResult(): ClassMatchResult = ClassMatchResult(id, matchId, matchType)
     override fun getClassMatcher(clazz: ClassNode): IClassMatcher {
         lastClass = clazz
         return this
@@ -47,7 +46,7 @@ open class MatchSequence(
     override fun getMatchResult() = match
 
     override fun matchMethod(method: MethodNode, instructions: Sequence<AbstractInsnNode>) {
-        if (match != null && match(instructions) != -1) {
+        if (match == null && match(instructions) != -1) {
             match = ClassMatchResult(id, matchId, matchType, ClueMatchResult(matchId, lastClass.name, method.id))
         }
     }
