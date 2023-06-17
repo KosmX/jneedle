@@ -1,8 +1,10 @@
-package dev.kosmx.needle.core
+package dev.kosmx.needle.util
 
 import org.objectweb.asm.tree.*
 
-object InsnComparator {
+
+class InsnComparator {
+    // comparator options, it may be needed to strictly enforce/omit policies
 
     fun compare(a: AbstractInsnNode, b: AbstractInsnNode): Boolean {
         if (a.opcode != b.opcode) return false

@@ -8,11 +8,15 @@ import kotlinx.cli.ArgType
 import kotlinx.cli.default
 import kotlinx.cli.required
 import kotlinx.coroutines.runBlocking
+import org.slf4j.kotlin.debug
+import org.slf4j.kotlin.toplevel.getLogger
 import kotlin.io.path.Path
 import kotlin.jvm.internal.Ref.IntRef
 import kotlin.time.ExperimentalTime
 import kotlin.time.measureTime
 
+// top-level logger, slow!
+private val logger by getLogger()
 @OptIn(ExperimentalTime::class)
 fun main(args: Array<String>) {
 
@@ -30,6 +34,7 @@ fun main(args: Array<String>) {
 
     CheckWrapper.init(databaseUrl, Path(databaseLocation))
 
+    logger.debug { "Strarting CLI run, file=$file, database=$databaseUrl, local cache=$databaseLocation" }
 
     val path = Path(file)
     if (path.toFile().isFile) {

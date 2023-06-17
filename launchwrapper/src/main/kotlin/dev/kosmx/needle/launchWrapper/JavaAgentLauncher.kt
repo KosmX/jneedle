@@ -2,7 +2,7 @@ package dev.kosmx.needle.launchWrapper
 
 import dev.kosmx.needle.CheckWrapper
 import dev.kosmx.needle.core.MatchType
-import dev.kosmx.needle.logger
+import org.slf4j.kotlin.getLogger
 import org.slf4j.kotlin.warn
 import java.lang.instrument.Instrumentation
 import kotlin.io.path.Path
@@ -12,6 +12,7 @@ import kotlin.time.measureTime
 
 object JavaAgentLauncher {
     private var checked = false // avoid double runs
+    private val logger by getLogger()
 
     @JvmStatic
     fun premain(agentArgs: String?, inst: Instrumentation) {

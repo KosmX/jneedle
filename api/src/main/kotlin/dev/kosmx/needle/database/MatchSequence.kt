@@ -1,10 +1,10 @@
 package dev.kosmx.needle.database
 
-import dev.kosmx.needle.core.InsnComparator
+import dev.kosmx.needle.util.InsnComparator
 import dev.kosmx.needle.core.JarCheckMatch
 import dev.kosmx.needle.core.MatchType
-import dev.kosmx.needle.lib.Word
-import dev.kosmx.needle.lib.match
+import dev.kosmx.needle.util.Word
+import dev.kosmx.needle.util.match
 import org.objectweb.asm.tree.AbstractInsnNode
 
 typealias InsnSequence = Word<AbstractInsnNode>
@@ -20,7 +20,7 @@ open class MatchSequence(
         word.match(instructions.filterMutable())
 
     constructor(id: String, instructions: Array<AbstractInsnNode>, matchType: MatchType = MatchType.MALWARE, matchId: String = "") :
-            this(id, Word(instructions, InsnComparator::compare), matchType, matchId = matchId)
+            this(id, Word(instructions, InsnComparator()::compare), matchType, matchId = matchId)
 
     override fun checkResult(): JarCheckMatch = JarCheckMatch(matchType, id, matchId)
 }

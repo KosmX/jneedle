@@ -1,12 +1,12 @@
 package dev.kosmx.needle.core
 
 import dev.kosmx.needle.CheckWrapper
-import dev.kosmx.needle.logger
 import me.coley.cafedude.classfile.ClassFile
 import me.coley.cafedude.io.ClassFileReader
 import me.coley.cafedude.io.ClassFileWriter
 import me.coley.cafedude.transform.IllegalStrippingTransformer
 import org.objectweb.asm.ClassReader
+import org.slf4j.kotlin.getLogger
 import org.slf4j.kotlin.info
 import org.slf4j.kotlin.warn
 import software.coley.llzip.ZipIO
@@ -19,6 +19,7 @@ import java.io.IOException
 
 
 object JarChecker {
+    private val logger by getLogger()
 
     fun checkJar(file: File): Set<JarCheckResult> {
         try {

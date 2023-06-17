@@ -1,7 +1,7 @@
 package dev.kosmx.jarchecker.lib
 
-import dev.kosmx.needle.lib.Word
-import dev.kosmx.needle.lib.match
+import dev.kosmx.needle.util.Word
+import dev.kosmx.needle.util.match
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 

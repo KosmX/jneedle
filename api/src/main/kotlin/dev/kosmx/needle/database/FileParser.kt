@@ -1,11 +1,10 @@
 package dev.kosmx.needle.database
 
-import dev.kosmx.needle.core.InsnComparator
+import dev.kosmx.needle.util.InsnComparator
 import dev.kosmx.needle.core.JarCheckMatch
 import dev.kosmx.needle.core.JarCheckResult
 import dev.kosmx.needle.core.MatchType
-import dev.kosmx.needle.lib.Word
-import dev.kosmx.needle.logger
+import dev.kosmx.needle.util.Word
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
@@ -13,6 +12,7 @@ import org.objectweb.asm.ClassReader
 import org.objectweb.asm.tree.AbstractInsnNode
 import org.objectweb.asm.tree.ClassNode
 import org.slf4j.kotlin.error
+import org.slf4j.kotlin.getLogger
 import software.coley.llzip.format.model.LocalFileHeader
 import java.nio.file.Path
 import java.util.*
@@ -20,6 +20,8 @@ import java.util.jar.JarFile
 import kotlin.io.path.extension
 
 object FileParser {
+    private val logger by getLogger()
+
     @OptIn(ExperimentalSerializationApi::class)
     fun parseFile(path: Path): Match? {
         try {
@@ -80,7 +82,7 @@ object FileParser {
 }
 
 private fun Array<AbstractInsnNode>.toWord(): Word<AbstractInsnNode> {
-    return Word(this, InsnComparator::compare)
+    return Word(this, InsnComparator()::compare)
 }
 
 @Serializable

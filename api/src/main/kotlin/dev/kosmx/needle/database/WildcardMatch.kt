@@ -1,10 +1,10 @@
 package dev.kosmx.needle.database
 
-import dev.kosmx.needle.core.InsnComparator
+import dev.kosmx.needle.util.InsnComparator
 import dev.kosmx.needle.core.JarCheckMatch
 import dev.kosmx.needle.core.MatchType
-import dev.kosmx.needle.lib.Word
-import dev.kosmx.needle.lib.match
+import dev.kosmx.needle.util.Word
+import dev.kosmx.needle.util.match
 import org.objectweb.asm.tree.AbstractInsnNode
 
 class WildcardMatch(
@@ -58,5 +58,5 @@ class WildcardMatch(
 }
 
 private fun List<AbstractInsnNode>.toWord(): Word<AbstractInsnNode> {
-    return Word(this.toTypedArray(), InsnComparator::compare)
+    return Word(this.toTypedArray(), InsnComparator()::compare)
 }

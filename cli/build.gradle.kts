@@ -22,6 +22,7 @@ dependencies {
     testImplementation(libs.bundles.kotlinx.coroutines.debugging)
 
     implementation(libs.kotlinx.cli)
+    implementation(libs.slf4k)
     implementation(libs.logback)
 
     testImplementation(kotlin("test"))

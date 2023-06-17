@@ -1,4 +1,4 @@
-package dev.kosmx.needle.lib
+package dev.kosmx.needle.util
 
 /**
  * O(n+m) pattern matching with Knuth-Morris-Pratt algo
