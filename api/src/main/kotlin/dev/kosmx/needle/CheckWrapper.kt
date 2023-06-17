@@ -2,76 +2,52 @@
 
 package dev.kosmx.needle
 
-import dev.kosmx.needle.core.JarCheckResult
-import dev.kosmx.needle.core.JarChecker
-import dev.kosmx.needle.database.Database
-import kotlinx.coroutines.*
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.channels.ReceiveChannel
-import software.coley.llzip.ZipIO
+import dev.kosmx.needle.matcher.result.IScanResult
+import dev.kosmx.needle.matcher.result.ScanResult
+import dev.kosmx.needle.scanner.ScanConfig
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import software.coley.llzip.format.model.ZipArchive
-import java.io.File
-import java.io.InputStream
 import java.nio.file.Path
-import java.util.jar.JarInputStream
-import kotlin.io.path.Path
 import kotlin.jvm.internal.Ref.IntRef
 
-
-typealias ScanResult = Pair<File, Set<JarCheckResult>>
 
 /**
  * Wrapper (static class) for easier API use
  *
  * First call init(...)
- * Then when it's returned the program state is effectively immutable, calling check functions is thread-safe
+ * Then when it's returned the wrapper state is effectively immutable, calling check functions is thread-safe
  *
- * re-initialization is possible, it will refresh the database (should be thread-safe, but I wouldn't bet on it)
+ * re-initialization is possible, it will refresh the database (should be thread-safe)
  */
 object CheckWrapper {
-    private var initialized = false
+    private lateinit var scanConfig: ScanConfig
 
-    private val defaultUrl = System.getProperty("dev.kosmx.jneedle.remoteDatabase") ?: String(
-        JarCheckResult::class.java.getResourceAsStream("/url")!!.readBytes()
-    )
 
     @JvmStatic
     @JvmOverloads
     fun init(
-        databaseUrl: String? = defaultUrl,
-        databaseLocation: Path = databasePath
+        databaseUrl: String? = ScanConfig.Defaults.defaultUrl,
+        databaseLocation: Path = ScanConfig.Defaults.databasePath,
     ) {
-
-        databaseLocation.toFile().mkdirs()
-        Database.init(databaseUrl, databaseLocation)
-        initialized = true
+        scanConfig = ScanConfig(databaseUrl, databaseLocation)
     }
-
-    val databasePath: Path
-        get() = System.getProperty("dev.kosmx.jneedle.databasePath")?.let { Path(it) }
-            ?: Path(System.getProperty("user.home")).resolve(".jneedle") // TODO: 2023-06-11 We should use ~/.cache/jneedle instead
 
     /**
      * Run the check for the given jar file. path has to point to a jar file
      * throws IOException if can't open
      */
     @JvmStatic
-    fun checkJar(path: Path): Set<JarCheckResult> {
-        require(initialized) { "Cannot run check before initialization is complete" }
-
-        ZipIO.readJvm(path).use { jar ->
-            return checkJar(jar)
-        }
+    fun checkJar(path: Path): Set<IScanResult> {
+        return scanConfig.checkJar(path)
     }
 
     /**
      * Check jar input stream, can be used from memory files or web API backend
      */
     @JvmStatic
-    fun checkJar(zipArchive: ZipArchive): Set<JarCheckResult> {
-        require(initialized) { "Cannot run check before initialization is complete" }
-
-        return JarChecker.checkJar(zipArchive)
+    fun checkJar(zipArchive: ZipArchive): Set<IScanResult> {
+        return scanConfig.checkJar(zipArchive)
     }
 
     /**
@@ -83,9 +59,7 @@ object CheckWrapper {
     fun checkPathBlocking(
         path: Path,
         threads: Int = Runtime.getRuntime().availableProcessors() * 4
-    ): List<ScanResult> = runBlocking {
-        checkPath(path, threads)
-    }
+    ): List<ScanResult> = scanConfig.checkPathBlocking(path, threads)
 
     /**
      * async checks everything on the path. If the path points to a single file, it will not start threading
@@ -96,66 +70,12 @@ object CheckWrapper {
      * @return check result
      */
     //@JvmStatic this can only be used from Kotlin, fancy java interface isn't needed
-    @OptIn(ExperimentalStdlibApi::class)
     suspend fun checkPath(
         path: Path,
         threads: Int = Runtime.getRuntime().availableProcessors() * 4,
         dispatcher: CoroutineDispatcher = Dispatchers.IO,
         jarVisitCallback: ((ScanResult) -> Unit) = { },
         scannedCount: IntRef = IntRef(),
-    ): List<ScanResult> = coroutineScope {
-        require(initialized) { "Cannot run check before initialization is complete" }
-        if (path.toFile().isFile) { // single file selection case
-            return@coroutineScope listOf(path.toFile() to checkJar(path).also {
-                scannedCount.element++
-                jarVisitCallback(path.toFile() to it)
-            })
-        }
-
-        val fileChannel = Channel<File>(threads) // fine-tuning may be needed
-        val receiveChannel: ReceiveChannel<File> = fileChannel
-
-        val resultChannel = Channel<List<ScanResult>>(threads)
-
-        // Set the fileChannel source. This should effectively endlessly generate files (or as long as there is anything left)
-        launch {
-            var count = 0
-            path.toFile().walk().forEach {
-                if (it.extension == "jar" && it.isFile) {
-                    count++
-                    fileChannel.send(it) // channel has finite size, it will suspend if the buffer is full
-                }
-            }
-            scannedCount.element = count
-            fileChannel.close() // all files are sent, "insert close element"
-        }
-
-        for (i in 0..<threads) {
-            launch(dispatcher) {
-                val results = mutableListOf<ScanResult>()
-
-                // for on a channel will receive elements as long as there is any.
-                // "if there is a new job, do it."
-                for (file in receiveChannel) {
-                    val r = JarChecker.checkJar(file)
-                    if (r.isNotEmpty()) {
-                        jarVisitCallback(file to r)
-                        results += file to r
-                    }
-                }
-                // send back the result
-                resultChannel.send(results)
-            }
-        }
-
-
-        val results = mutableListOf<ScanResult>()
-        for (i in 0..<threads) { // collect the results from all worker threads
-            results += resultChannel.receive()
-        }
-        resultChannel.close() // no more results
-
-        return@coroutineScope results // return
-    }
+    ): List<ScanResult> = scanConfig.checkPath(path, threads, dispatcher, jarVisitCallback, scannedCount)
 }
 

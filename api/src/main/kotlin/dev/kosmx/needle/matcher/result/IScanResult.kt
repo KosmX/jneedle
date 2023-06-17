@@ -1,5 +1,7 @@
 package dev.kosmx.needle.matcher.result
 
+import java.io.File
+
 interface IScanResult {
     val malware: String
     val rule: String
@@ -7,3 +9,6 @@ interface IScanResult {
     val extra: String
         get() = ""
 }
+
+
+typealias ScanResult = Pair<File, Set<IScanResult>>

@@ -61,6 +61,7 @@ interface IJarMatcher {
 
     /**
      * After every class is checked in the JAR, this function will return [IScanResult] or null if no matches were found
+     * Conditions may be evaluated when this is invoked
      */
     fun getMatchResult(): IScanResult?
 }
