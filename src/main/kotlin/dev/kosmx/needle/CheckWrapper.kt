@@ -11,9 +11,7 @@ import kotlinx.coroutines.channels.ReceiveChannel
 import software.coley.llzip.ZipIO
 import software.coley.llzip.format.model.ZipArchive
 import java.io.File
-import java.io.InputStream
 import java.nio.file.Path
-import java.util.jar.JarInputStream
 import kotlin.io.path.Path
 import kotlin.jvm.internal.Ref.IntRef
 
@@ -106,10 +104,14 @@ object CheckWrapper {
     ): List<ScanResult> = coroutineScope {
         require(initialized) { "Cannot run check before initialization is complete" }
         if (path.toFile().isFile) { // single file selection case
-            return@coroutineScope listOf(path.toFile() to checkJar(path).also {
+            return@coroutineScope checkJar(path).also {
                 scannedCount.element++
                 jarVisitCallback(path.toFile() to it)
-            })
+            }.let {
+                if (it.isNotEmpty()) {
+                    listOf( path.toFile() to it )
+                } else listOf()
+            }
         }
 
         val fileChannel = Channel<File>(threads) // fine-tuning may be needed

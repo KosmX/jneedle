@@ -49,7 +49,7 @@ dependencies {
     "shadowImplement"("com.github.Col-E:CAFED00D:1.10.2")
     "shadowImplement"("org.slf4j:slf4j-jdk14:2.0.7")
 
-    "shadowImplement"(group = "software.coley", name = "lljzip", version = "1.4.0")
+    "shadowImplement"(group = "software.coley", name = "lljzip", version = "1.6.1")
     //shadow("org.slf4j:slf4j:2.0.7")
 
 
