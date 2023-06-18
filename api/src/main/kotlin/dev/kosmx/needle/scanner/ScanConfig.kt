@@ -9,6 +9,8 @@ import dev.kosmx.needle.matcher.result.ScanResult
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
+import org.slf4j.kotlin.debug
+import org.slf4j.kotlin.getLogger
 import software.coley.llzip.ZipIO
 import software.coley.llzip.format.model.ZipArchive
 import java.io.File
@@ -35,6 +37,7 @@ class ScanConfig
      * Scan rules for config
      */
     val scanRules: List<IMatchRule>
+    private val logger by getLogger()
 
     init {
         databaseLocation.toFile().mkdirs()
@@ -51,6 +54,7 @@ class ScanConfig
      * throws IOException if can't open
      */
     fun checkJar(path: Path): Set<IScanResult> {
+        logger.debug { "Start scanning jar: $path" }
         ZipIO.readJvm(path).use { jar ->
             return JarScanner.checkJar(this, jar)
         }
