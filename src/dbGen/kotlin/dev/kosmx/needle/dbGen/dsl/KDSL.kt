@@ -12,6 +12,7 @@ import org.objectweb.asm.Opcodes.ACC_STATIC
 import org.objectweb.asm.tree.AbstractInsnNode
 import org.objectweb.asm.tree.ClassNode
 import org.objectweb.asm.tree.InsnNode
+import org.objectweb.asm.tree.MethodInsnNode
 import org.objectweb.asm.tree.MethodNode
 import org.objectweb.asm.tree.VarInsnNode
 import java.nio.file.Path
@@ -56,6 +57,13 @@ class KDSL(private val entries: MutableList<Entry>) {
 
         fun insn(vararg i: AbstractInsnNode) {
             instructions += i
+        }
+
+
+        fun MethodInsnNode(opcode: Int, sign: String): MethodInsnNode {
+            val match = Regex("(?<owner>[^\\. ]+)\\.(?<name>[^\\(]+)(?<descriptor>\\(.*\\).+)")
+            val mr = match.matchEntire(sign)?.groups ?: error("Illegal method signature: $sign")
+            return MethodInsnNode(opcode, mr["owner"]!!.value, mr["name"]!!.value, mr["descriptor"]!!.value)
         }
 
 
