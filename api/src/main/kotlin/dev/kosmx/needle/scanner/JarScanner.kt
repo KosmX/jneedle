@@ -11,25 +11,11 @@ import software.coley.llzip.format.compression.ZipCompressions
 import software.coley.llzip.format.model.LocalFileHeader
 import software.coley.llzip.format.model.ZipArchive
 import software.coley.llzip.util.ByteDataUtil
-import java.io.File
 import java.io.IOException
 
 
 object JarScanner {
     private val logger by getLogger()
-
-    fun checkJar(config: ScanConfig, file: File): Set<IScanResult> {
-        try {
-            ZipIO.readJvm(file.toPath()).use { jar ->
-                return checkJar(config, jar)
-            }
-        } catch (t: Throwable) {
-            logger.warn(t) {
-                "Failed to open $file"
-            }
-        }
-        return setOf()
-    }
 
     fun checkJar(config: ScanConfig, jar: ZipArchive): Set<IScanResult> {
         val results = mutableSetOf<IScanResult>()
