@@ -9,7 +9,7 @@ class Word<T>(val word: Array<T>, private val comparator: (T, T) -> Boolean = { 
     init {
         require(word.isNotEmpty()) { "Matcher can't match empty word" }
     }
-    private val pattern by lazy { Pattern() }
+    private val pattern = Pattern()
 
 
     fun matcher() = Matcher(pattern)

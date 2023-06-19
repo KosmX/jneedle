@@ -1,8 +1,8 @@
 package dev.kosmx.needle.database
 
-import dev.kosmx.needle.core.AssetChecker
-import dev.kosmx.needle.core.ClassChecker
 import dev.kosmx.needle.database.hardCodedDetectors.HardCodedDetectors
+import dev.kosmx.needle.database.serializing.FileParser
+import dev.kosmx.needle.matcher.IMatchRule
 import kotlinx.coroutines.*
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
@@ -25,8 +25,7 @@ object Database {
     private val logger by getLogger()
 
 
-    fun init(databaseUrl: String?, dataPath: Path) {
-        val database = mutableListOf<Match>()
+    fun init(database: MutableList<IMatchRule>, databaseUrl: String?, dataPath: Path) {
         try {
             if (databaseUrl != null) {
                 var localDbVersion = -1
@@ -59,8 +58,6 @@ object Database {
         }
         database += HardCodedDetectors.getHardCodedDetectors()
 
-        ClassChecker.init(database.filterIsInstance<ClassMatch>())
-        AssetChecker.init(database.filterIsInstance<AssetMatch>())
     }
 
     private fun updateDb(databaseUrl: String, dataPath: Path) {

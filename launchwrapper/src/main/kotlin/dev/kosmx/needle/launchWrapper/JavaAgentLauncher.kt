@@ -1,7 +1,7 @@
 package dev.kosmx.needle.launchWrapper
 
 import dev.kosmx.needle.CheckWrapper
-import dev.kosmx.needle.core.MatchType
+import dev.kosmx.needle.matcher.result.Severity
 import org.slf4j.kotlin.getLogger
 import org.slf4j.kotlin.warn
 import java.lang.instrument.Instrumentation
@@ -49,7 +49,7 @@ object JavaAgentLauncher {
             } ?: CheckWrapper.init()
 
             val result = CheckWrapper.checkPathBlocking(Path("."))
-            if (result.any { pair -> pair.second.any { it.status != MatchType.INFO } }) {
+            if (result.any { pair -> pair.second.any { it.severity != Severity.INFORMATION } }) {
 
                 result.forEach { (file, results) ->
                     println("$file matches ${results.map { it.getMessage() }}")

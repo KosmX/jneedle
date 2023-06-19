@@ -1,7 +1,7 @@
 package dev.kosmx.needle.dbGen.dsl
 
-import dev.kosmx.needle.core.MatchType
-import dev.kosmx.needle.database.Info
+import dev.kosmx.needle.database.serializing.Info
+import dev.kosmx.needle.matcher.result.Severity
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.encodeToStream
@@ -32,7 +32,7 @@ var idTracker = 0
 class KDSL(private val entries: MutableList<Entry>) {
     var malwareId: String = "none"
 
-    var type: MatchType = MatchType.MALWARE
+    var type: Severity = Severity.SEVERE
 
     fun byteCodeEntry(block: ByteCodeEntry.() -> Unit) {
         entries += ByteCodeEntry().also(block)

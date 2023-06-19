@@ -1,8 +1,7 @@
 package dev.kosmx.needle.cli
 
 import dev.kosmx.needle.CheckWrapper
-import dev.kosmx.needle.core.JarCheckResult
-import dev.kosmx.needle.core.JarChecker
+import dev.kosmx.needle.scanner.ScanConfig
 import kotlinx.cli.ArgParser
 import kotlinx.cli.ArgType
 import kotlinx.cli.default
@@ -20,13 +19,13 @@ private val logger by getLogger()
 @OptIn(ExperimentalTime::class)
 fun main(args: Array<String>) {
 
-    val defaultUrl = String(JarCheckResult::class.java.getResourceAsStream("/url")!!.readBytes())
+    val defaultUrl = ScanConfig.Defaults.defaultUrl
 
     val parser = ArgParser("jNeedle")
 
     val file by parser.option(ArgType.String, shortName = "f", fullName = "file", description = "file or directory").required()
     val databaseUrl by parser.option(ArgType.String, shortName = "u", fullName = "url").default(defaultUrl)
-    val databaseLocation by parser.option(ArgType.String, fullName = "dblocation").default(CheckWrapper.databasePath.toString())
+    val databaseLocation by parser.option(ArgType.String, fullName = "dblocation").default(ScanConfig.Defaults.databasePath.toString())
     val threads by parser.option(ArgType.Int, fullName = "threads").default(Runtime.getRuntime().availableProcessors())
 
     parser.parse(args)
@@ -38,7 +37,7 @@ fun main(args: Array<String>) {
 
     val path = Path(file)
     if (path.toFile().isFile) {
-        println(JarChecker.checkJar(path.toFile()))
+        println(CheckWrapper.checkJar(path))
     } else {
 
         measureTime {

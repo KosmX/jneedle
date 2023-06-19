@@ -1,7 +1,7 @@
 package dev.kosmx.needle.dbGen.db
 
-import dev.kosmx.needle.core.MatchType
 import dev.kosmx.needle.dbGen.dsl.KDSL
+import dev.kosmx.needle.matcher.result.Severity
 import org.objectweb.asm.Opcodes.*
 import org.objectweb.asm.tree.InsnNode
 import org.objectweb.asm.tree.IntInsnNode
@@ -10,7 +10,7 @@ import org.objectweb.asm.tree.TypeInsnNode
 
 fun KDSL.fractureiser() {
     malwareId = "fractureiser"
-    type = MatchType.MALWARE
+    type = Severity.SEVERE
 
     "SIG1" byteCodeEntry {
         autoFilerInstructions = true

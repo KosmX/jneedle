@@ -6,11 +6,11 @@ plugins {
 
 tasks {
     shadowJar {
-        archiveClassifier.set("")
+        archiveClassifier.set("all")
     }
 
     jar {
-        archiveClassifier.set("slim")
+        //archiveClassifier.set("slim")
     }
     build {
         dependsOn(shadowJar)

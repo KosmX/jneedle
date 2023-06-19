@@ -120,3 +120,5 @@ run/
 /database
 
 *.pass
+
+/logs

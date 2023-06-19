@@ -11,6 +11,9 @@ data class ClassMatchResult(
 
     override val extra: String
         get() = if (clues.isNotEmpty()) clues.toString() else ""
+
+    override fun getMessage(): String =
+        if (clues.isEmpty()) "$severity($malware, rule=$rule)" else "$severity($malware, rule=$rule, clues=$clues)"
 }
 
 
