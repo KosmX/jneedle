@@ -42,8 +42,7 @@ object Database {
                 }
             }
         } catch (e: Exception) {
-            logger.warn {
-                e.printStackTrace()
+            logger.warn(e) {
                 "Failed to fetch database: $databaseUrl is not available."
             }
         }

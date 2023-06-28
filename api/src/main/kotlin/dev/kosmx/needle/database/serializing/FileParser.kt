@@ -72,8 +72,7 @@ object FileParser {
                 else -> null
             }
         } catch (e: Exception) {
-            logger.error {
-                e.printStackTrace()
+            logger.error(e) {
                 "Failed to load database entry: $path reason: ${e.message}"
             }
             return null
