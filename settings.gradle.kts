@@ -9,4 +9,10 @@ plugins {
 }
 
 rootProject.name = "jneedle"
-include(":compose")
+include(":api")
+include(":cli")
+include(":launchwrapper")
+include(":gui")
+
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+
