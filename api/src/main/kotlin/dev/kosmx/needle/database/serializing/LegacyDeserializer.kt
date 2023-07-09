@@ -62,7 +62,7 @@ object LegacyDeserializer {
 
 
     @Serializable
-    private data class Info(
+    data class Info(
         val name: String,
         val threat: Severity = Severity.SEVERE,
         val encoded: Boolean = false,

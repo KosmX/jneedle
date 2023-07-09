@@ -1,6 +1,6 @@
 package dev.kosmx.needle.dbGen.dsl
 
-import dev.kosmx.needle.database.serializing.Info
+import dev.kosmx.needle.database.serializing.LegacyDeserializer
 import dev.kosmx.needle.matcher.result.Severity
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
@@ -12,6 +12,7 @@ import org.objectweb.asm.Opcodes.ACC_STATIC
 import org.objectweb.asm.tree.AbstractInsnNode
 import org.objectweb.asm.tree.ClassNode
 import org.objectweb.asm.tree.InsnNode
+import org.objectweb.asm.tree.MethodInsnNode
 import org.objectweb.asm.tree.MethodNode
 import org.objectweb.asm.tree.VarInsnNode
 import java.nio.file.Path
@@ -59,6 +60,13 @@ class KDSL(private val entries: MutableList<Entry>) {
         }
 
 
+        fun MethodInsnNode(opcode: Int, sign: String): MethodInsnNode {
+            val match = Regex("(?<owner>[^\\. ]+)\\.(?<name>[^\\(]+)(?<descriptor>\\(.*\\).+)")
+            val mr = match.matchEntire(sign)?.groups ?: error("Illegal method signature: $sign")
+            return MethodInsnNode(opcode, mr["owner"]!!.value, mr["name"]!!.value, mr["descriptor"]!!.value)
+        }
+
+
         @OptIn(ExperimentalSerializationApi::class)
         override fun generate(outputPath: Path): String {
             JarOutputStream(outputPath.resolve(fileName).toFile().outputStream()).use { jar ->
@@ -90,7 +98,7 @@ class KDSL(private val entries: MutableList<Entry>) {
                 dataEntr.time = Instant.now().epochSecond
                 jar.putNextEntry(dataEntr)
                 Json.encodeToStream(
-                    Info(
+                    LegacyDeserializer.Info(
                         name = this@KDSL.malwareId,
                         threat = this@KDSL.type,
                         matchId = matchId,
