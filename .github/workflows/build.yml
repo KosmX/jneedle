@@ -37,7 +37,11 @@ jobs:
         if: ${{ runner.os != 'Windows' }}
         uses: mikepenz/gradle-dependency-submission@v0.8.6
         with:
-          sub-module-mode: COMBINED
+          gradle-build-module: |-
+            :api
+            :cli
+            :launchwrapper
+            :gui
       - name: capture build artifacts
         if: ${{ runner.os == 'Linux' && matrix.java == '17' }} # Only upload artifacts built from latest java on one OS
         uses: actions/upload-artifact@v3
