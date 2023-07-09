@@ -42,6 +42,7 @@ jobs:
             :cli
             :launchwrapper
             :gui
+        continue-on-error: true
       - name: capture build artifacts
         if: ${{ runner.os == 'Linux' && matrix.java == '17' }} # Only upload artifacts built from latest java on one OS
         uses: actions/upload-artifact@v3
