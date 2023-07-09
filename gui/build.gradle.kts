@@ -18,6 +18,7 @@ ext["mainClass"] = mainClassName
 dependencies {
     implementation(projects.api)
     implementation(libs.logback)
+    implementation(libs.slf4k)
 
     implementation(compose.desktop.currentOs)
 
