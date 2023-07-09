@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalStdlibApi::class)
-
 package dev.kosmx.needle
 
 import dev.kosmx.needle.matcher.result.IScanResult
@@ -7,7 +5,7 @@ import dev.kosmx.needle.matcher.result.ScanResult
 import dev.kosmx.needle.scanner.ScanConfig
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
-import software.coley.llzip.format.model.ZipArchive
+import software.coley.lljzip.format.model.ZipArchive
 import java.nio.file.Path
 import kotlin.jvm.internal.Ref.IntRef
 
@@ -21,15 +19,31 @@ import kotlin.jvm.internal.Ref.IntRef
  * re-initialization is possible, it will refresh the database (should be thread-safe)
  */
 object CheckWrapper {
-    private lateinit var scanConfig: ScanConfig
+    private var _scanConfig: ScanConfig? = null
+    private var scanConfig: ScanConfig
+        get() = _scanConfig ?: error("CheckWrapper is not initialized")
+        set(value) {
+            _scanConfig = value
+        }
 
+    @JvmStatic
+    val initialized
+        get() = _scanConfig != null
 
+    /**
+     * Initialize or re-initialize static wrapper
+     * @param databaseUrl remote database URL, null if fetching is disabled
+     * @param databaseLocation database cache on local filesystem
+     * @param allowReInitialize allow re-initialization, if not, it will *assert* first initialization
+     */
     @JvmStatic
     @JvmOverloads
     fun init(
         databaseUrl: String? = ScanConfig.Defaults.defaultUrl,
         databaseLocation: Path = ScanConfig.Defaults.databasePath,
+        allowReInitialize: Boolean = false,
     ) {
+        assert(allowReInitialize || !initialized)
         scanConfig = ScanConfig(databaseUrl, databaseLocation)
     }
 
