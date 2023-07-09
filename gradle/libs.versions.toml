@@ -106,7 +106,7 @@ cafedude = { group = "com.github.Col-E", name = "CAFED00D", version = "1.10.2" }
 
 # LLJ-ZIP
 ## A closer to the spec implementation of ZIP parsing for Java.
-lljzip = { group = "software.coley", name = "lljzip", version = "1.6.1" }
+lljzip = { group = "software.coley", name = "lljzip", version = "2.1.2" }
 
 
 

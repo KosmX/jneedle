@@ -4,7 +4,7 @@ import dev.kosmx.needle.matcher.result.IScanResult
 import org.objectweb.asm.tree.AbstractInsnNode
 import org.objectweb.asm.tree.ClassNode
 import org.objectweb.asm.tree.MethodNode
-import software.coley.llzip.format.model.LocalFileHeader
+import software.coley.lljzip.format.model.LocalFileHeader
 
 /**
  * Represents a rule

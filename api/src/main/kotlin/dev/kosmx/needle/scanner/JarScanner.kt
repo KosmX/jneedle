@@ -6,11 +6,10 @@ import org.slf4j.kotlin.debug
 import org.slf4j.kotlin.getLogger
 import org.slf4j.kotlin.info
 import org.slf4j.kotlin.warn
-import software.coley.llzip.ZipIO
-import software.coley.llzip.format.compression.ZipCompressions
-import software.coley.llzip.format.model.LocalFileHeader
-import software.coley.llzip.format.model.ZipArchive
-import software.coley.llzip.util.ByteDataUtil
+import software.coley.lljzip.ZipIO
+import software.coley.lljzip.format.compression.ZipCompressions
+import software.coley.lljzip.format.model.ZipArchive
+import software.coley.lljzip.util.ByteDataUtil
 import java.io.IOException
 
 
@@ -22,7 +21,7 @@ object JarScanner {
         val matches = config.scanRules.mapNotNull { it.getJarMatcher(FileMatchContext(config, jar)) }
 
 
-        zipEntry@for (jarEntry in jar) {
+        zipEntry@for (jarEntry in jar.localFiles) {
             val byteData by lazy { ZipCompressions.decompress(jarEntry) }
             val bytes = lazy { ByteDataUtil.toByteArray(byteData)!! }
             if (jarEntry.fileNameAsString.let { it.endsWith(".class") || it.endsWith(".class/") }) {
@@ -63,8 +62,4 @@ object JarScanner {
         return results
     }
 }
-
-fun ZipArchive.asSequence() = localFiles.asSequence().map { it }
-
-operator fun ZipArchive.iterator(): Iterator<LocalFileHeader> = this.asSequence().iterator()
 

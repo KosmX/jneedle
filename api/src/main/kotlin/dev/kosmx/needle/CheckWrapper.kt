@@ -5,7 +5,7 @@ import dev.kosmx.needle.matcher.result.ScanResult
 import dev.kosmx.needle.scanner.ScanConfig
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
-import software.coley.llzip.format.model.ZipArchive
+import software.coley.lljzip.format.model.ZipArchive
 import java.nio.file.Path
 import kotlin.jvm.internal.Ref.IntRef
 

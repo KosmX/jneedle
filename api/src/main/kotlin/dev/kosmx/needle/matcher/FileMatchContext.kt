@@ -1,8 +1,7 @@
 package dev.kosmx.needle.matcher
 
 import dev.kosmx.needle.scanner.ScanConfig
-import software.coley.llzip.format.model.ZipArchive
-import java.nio.file.Path
+import software.coley.lljzip.format.model.ZipArchive
 
 
 /**

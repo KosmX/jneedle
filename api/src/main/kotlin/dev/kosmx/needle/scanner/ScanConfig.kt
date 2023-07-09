@@ -10,10 +10,12 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import org.slf4j.kotlin.debug
+import org.slf4j.kotlin.error
 import org.slf4j.kotlin.getLogger
-import software.coley.llzip.ZipIO
-import software.coley.llzip.format.model.ZipArchive
+import software.coley.lljzip.ZipIO
+import software.coley.lljzip.format.model.ZipArchive
 import java.io.File
+import java.io.IOException
 import java.nio.file.Path
 import kotlin.io.path.Path
 import kotlin.jvm.internal.Ref
@@ -51,12 +53,17 @@ class ScanConfig
 
     /**
      * Run the check for the given jar file. path has to point to a jar file
-     * throws IOException if can't open
+     * returns nothing if the file can't be opened as jar
      */
     fun checkJar(path: Path): Set<IScanResult> {
         logger.debug { "Start scanning jar: $path" }
-        ZipIO.readJvm(path).use { jar ->
-            return JarScanner.checkJar(this, jar)
+        return try {
+            ZipIO.readJvm(path).use { jar ->
+                JarScanner.checkJar(this, jar)
+            }
+        } catch (e: IOException) {
+            logger.error(e) {"File $path can't be opened as java archive (jar)"}
+            emptySet()
         }
     }
 
