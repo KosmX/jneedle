@@ -45,15 +45,13 @@ object ComposeMain {
 
     @Preview
     @Composable
-    fun App() {
+    fun app() {
         var showDirectoryPicker by remember { mutableStateOf(false) }
         var showFilePicker by remember { mutableStateOf(false) }
         var targetPath by remember { mutableStateOf("C:\\") }
         var validTarget by remember { mutableStateOf(true) }
 
         val composerScope = rememberCoroutineScope()
-
-        CheckWrapper.init()
 
         FilePicker(showFilePicker) { path ->
             showFilePicker = false
@@ -220,11 +218,14 @@ object ComposeMain {
 }
 
 fun main() = application {
+
+    CheckWrapper.init()
+
     Window(
         state = WindowState(width = 1000.dp, height = 600.dp),
         onCloseRequest = ::exitApplication,
         title = "JNeedle Malware Detection Tool"
     ) {
-        ComposeMain.App()
+        ComposeMain.app()
     }
 }
