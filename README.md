@@ -4,7 +4,7 @@ Yet another jar malware detection tool
 
 ---
 
-## Quickstart
+## Quickstart / How to use
 
 If you came from [MMPA](https://blog.mmpa.info) or already know what this program does, look here to see how to use jNeedle.
 
@@ -30,7 +30,19 @@ _Help, where do I need to put that command?_
 
 On Windows, open the file explorer, navigate to the folder where you downloaded the jar file. Press `Shift` and right click on empty space. Select `Open PowerShell window here` and type the command above.
 
----
+For more CLI arguments, type the command without `-f`:
+
+```text
+> java -jar .\jneedle-1.0.0.jar
+Value for option --file should be always provided in command line.
+Usage: jNeedle options_list
+Options:
+    --file, -f -> file or directory (always required) { String }
+    --url, -u [https://maven.kosmx.dev/dev/kosmx/needles] { String }
+    --dblocation [C:\Users\kosmx\.jneedle] { String }
+    --threads [16] { Int }
+    --help, -h -> Usage info
+```
 
 ## How to find the needle in a haystack? - Use a strong enough magnet
 
@@ -93,20 +105,6 @@ Some parameter can be set as a JVM property:
 If using `-cp jneedle.jar dev.kosmx.needle.launchWrapper.ParameterizedWrapper`  
 `-Ddev.kosmx.jneedle.launchClass` to set the start class after checking is completed. The application has to be in classpath.  
 (This is for Minecraft wrapper use)
-
-## CLI mode
-
-```text
-> java -jar .\jneedle-1.0.0.jar
-Value for option --file should be always provided in command line.
-Usage: jNeedle options_list
-Options:
-    --file, -f -> file or directory (always required) { String }
-    --url, -u [https://maven.kosmx.dev/dev/kosmx/needles] { String }
-    --dblocation [C:\Users\kosmx\.jneedle] { String }
-    --threads [16] { Int }
-    --help, -h -> Usage info
-```
 
 ## API usage:
 
