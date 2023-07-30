@@ -28,7 +28,7 @@ java -jar jneedle-xxx-fat.jar -f <path to jar or directory>
 
 _Help, where do I need to put that command?_
 
-On Windows, open the file explorer, navigate to the folder where you downloaded the jar file. Press `Shift` and right click on empty space. Select `Open PowerShell window here` and type the command above.
+On Windows, open the file explorer, navigate to the folder where you downloaded the jar file. Hold `Shift` and right click on empty space. Select `Open PowerShell window here` and type the command above.
 
 For more CLI arguments, type the command without `-f`:
 
