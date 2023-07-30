@@ -26,8 +26,9 @@ If you want to use the CLI version, you have to download the `jneedle-xxx-fat.ja
 java -jar jneedle-xxx-fat.jar -f <path to jar or directory>
 ```
 
-_Help, where do I need to put that command?_
+JNeedle will then check the given file or directory for malicious code. It gives a summary of the results at the end.
 
+_Help, where do I need to put that command?_  
 On Windows, open the file explorer, navigate to the folder where you downloaded the jar file. Hold `Shift` and right click on empty space. Select `Open PowerShell window here` and type the command above.
 
 For more CLI arguments, type the command without `-f`:
