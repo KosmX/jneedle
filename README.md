@@ -15,8 +15,7 @@ Just download the `jneedle-gui-xxx.jar` from the [release page](https://github.c
 
 _Help, it won't start!_
 
-There currently is a bug in the GUI version with Java 1.8, which won't let the program start. This is known and will be fixed.  
-If you still want to use it, look at the [CLI mode](#cli-mode).
+There currently is a bug with Java 1.8, which won't let the program start. This is known and will be fixed in the future.
 
 ### CLI mode
 
@@ -30,6 +29,9 @@ JNeedle will then check the given file or directory for malicious code. It gives
 
 _Help, where do I need to put that command?_  
 On Windows, open the file explorer, navigate to the folder where you downloaded the jar file. Hold `Shift` and right click on empty space. Select `Open PowerShell window here` and type the command above.
+
+_Help, it won't start!_  
+See the [GUI section](#gui-graphical-mode) for more information.
 
 For more CLI arguments, type the command without `-f`:
 
