@@ -8,6 +8,15 @@ Yet another jar malware detection tool
 
 If you came from [MMPA](https://blog.mmpa.info) or already know what this program does, look here to see how to use jNeedle.
 
+### GUI (Graphical) mode
+
+The easiest way to use jNeedle is to use the GUI version.
+Just download the `jneedle-gui-xxx.jar` from the [release page](https://github.com/KosmX/jneedle/releases/latest) and double click on it.
+
+> Help, it won't start!
+
+There currently is a bug in the GUI version with Java 1.8, which won't let the program start. This is known and will be fixed.
+
 ---
 
 ## How to find the needle in a haystack? - Use a strong enough magnet
