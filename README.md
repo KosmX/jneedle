@@ -62,6 +62,9 @@ come home
 
 ## See the **light** at the end of the tunnel
 
+**Attention! These are advanced options, which you probably won't need!**  
+For an easy setup, look at the [Quickstart](#quickstart--how-to-use) section.
+
 ### Add to PrismLauncher
 
 ### Extra jar // recommended but harder to set-up
