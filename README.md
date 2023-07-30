@@ -94,10 +94,6 @@ If using `-cp jneedle.jar dev.kosmx.needle.launchWrapper.ParameterizedWrapper`
 `-Ddev.kosmx.jneedle.launchClass` to set the start class after checking is completed. The application has to be in classpath.  
 (This is for Minecraft wrapper use)
 
-## GUI mode
-
-There is a gui version, you can simply open it in a graphical environment
-
 ## CLI mode
 
 ```text
