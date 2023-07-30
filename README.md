@@ -13,9 +13,22 @@ If you came from [MMPA](https://blog.mmpa.info) or already know what this progra
 The easiest way to use jNeedle is to use the GUI version.
 Just download the `jneedle-gui-xxx.jar` from the [release page](https://github.com/KosmX/jneedle/releases/latest) and double click on it.
 
-> Help, it won't start!
+_Help, it won't start!_
 
-There currently is a bug in the GUI version with Java 1.8, which won't let the program start. This is known and will be fixed.
+There currently is a bug in the GUI version with Java 1.8, which won't let the program start. This is known and will be fixed.  
+If you still want to use it, look at the [CLI mode](#cli-mode).
+
+### CLI mode
+
+If you want to use the CLI version, you have to download the `jneedle-xxx-fat.jar` from the [release page](https://github.com/KosmX/jneedle/releases/latest) and run it with the following command:
+
+```text
+java -jar jneedle-xxx-fat.jar -f <path to jar or directory>
+```
+
+_Help, where do I need to put that command?_
+
+On Windows, open the file explorer, navigate to the folder where you downloaded the jar file. Press `Shift` and right click on empty space. Select `Open PowerShell window here` and type the command above.
 
 ---
 
