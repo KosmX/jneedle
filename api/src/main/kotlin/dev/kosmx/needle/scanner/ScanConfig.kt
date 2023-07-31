@@ -61,7 +61,7 @@ class ScanConfig
             ZipIO.readJvm(path).use { jar ->
                 JarScanner.checkJar(this, jar)
             }
-        } catch (e: IOException) {
+        } catch (e: Exception) {
             logger.error(e) {"File $path can't be opened as java archive (jar)"}
             emptySet()
         }
