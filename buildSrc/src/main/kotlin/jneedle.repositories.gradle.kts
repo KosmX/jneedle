@@ -12,5 +12,6 @@ repositories {
         mavenContent {
             snapshotsOnly()
         }
+        mavenLocal()
     }
 }

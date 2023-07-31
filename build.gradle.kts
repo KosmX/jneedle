@@ -4,5 +4,5 @@ plugins {
 
 allprojects {
     group = "dev.kosmx.needle"
-    version = rootProject.scmVersion.version
+    version = "1.1.0-local"//rootProject.scmVersion.version
 }
