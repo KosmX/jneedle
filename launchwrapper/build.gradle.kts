@@ -31,4 +31,12 @@ tasks {
         relocationPrefix = "needleWrapper"
         exclude("META-INF/**")
     }
+
+    jar {
+        manifest {
+            attributes(
+                "Premain-Class" to "needleWrapper.dev.kosmx.needle.launchWrapper.JavaAgentLauncher",
+                "Agent-Class" to "needleWrapper.dev.kosmx.needle.launchWrapper.JavaAgentLauncher",)
+        }
+    }
 }
