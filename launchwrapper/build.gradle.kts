@@ -27,8 +27,8 @@ dependencies {
 tasks {
     // Relocation is necessary to avoid classpath collision
     shadowJar {
-        relocate("kotlin", "dev.kosmx.needle.kotlin")
-        relocate("kotlinx", "dev.kosmx.needle.kotlinx")
-        relocate("org.slf4j", "dev.kosmx.needle.org.slf4j")
+        isEnableRelocation = true
+        relocationPrefix = "needleWrapper"
+        exclude("META-INF/**")
     }
 }
