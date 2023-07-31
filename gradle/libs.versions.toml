@@ -76,7 +76,7 @@ kotlinx-cli = { group = "org.jetbrains.kotlinx", name = "kotlinx-cli", version =
 
 # Clikt
 ## Multiplatform Kotlin Library for writing CLI interfaces
-clikt = { group = "com.github.ajalt.clikt", name = "clikt", version = "4.1.0" }
+clikt = { group = "com.github.ajalt.clikt", name = "clikt", version = "4.2.0" }
 
 
 # TODO: decide whether to use kotlinx.serialization for config or konf (or maybe smth else?)
