@@ -55,7 +55,7 @@ ktoml-file = { group = "com.akuleshov7", name = "ktoml-file", version.ref = "kto
 # TODO: decide whether to use kotlinx.serialization for config or konf (or maybe smth else?)
 # Kaml
 ## YAML serialization for kotlinx.serialization
-kaml = { group = "com.charleskorn.kaml", name = "kaml", version = "0.54.0" }
+kaml = { group = "com.charleskorn.kaml", name = "kaml", version = "0.55.0" }
 
 
 # kotlinx.coroutines
