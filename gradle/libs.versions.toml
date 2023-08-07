@@ -136,7 +136,7 @@ fuel-kotlinx-serialization = { group = "com.github.kittinunf.fuel", name = "fuel
 # Guava
 ## A set of core Java libraries from Google that includes new collection types, immutable collections, a graph library,
 ##      and utilities for concurrency, I/O, hashing, caching, primitives, strings, and more
-guava = { group = "com.google.guava", name = "guava", version = "32.1.1-jre" }
+guava = { group = "com.google.guava", name = "guava", version = "32.1.2-jre" }
 # Guava Kotlin
 ## A wrapper around Guava to make it more idiomatic in kotlin
 guava-kotlin = { group = "ca.solo-studios", name = "guava-kotlin", version = "0.1.0" }
