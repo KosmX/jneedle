@@ -29,7 +29,7 @@ shadow = { id = "com.github.johnrengelman.shadow", version.ref = "shadow" }
 
 dokka = { id = "org.jetbrains.dokka", version.ref = "kotlin" }
 
-compose = { id = "org.jetbrains.compose", version = "1.4.3" }
+compose = { id = "org.jetbrains.compose", version = "1.5.0" }
 
 
 [libraries]
