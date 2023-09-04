@@ -71,7 +71,7 @@ kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime",
 
 # kotlinx-cli
 ## Pure Kotlin implementation of a generic command-line parser.
-kotlinx-cli = { group = "org.jetbrains.kotlinx", name = "kotlinx-cli", version = "0.3.5" }
+kotlinx-cli = { group = "org.jetbrains.kotlinx", name = "kotlinx-cli", version = "0.3.6" }
 
 
 # Clikt
