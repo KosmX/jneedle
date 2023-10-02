@@ -23,7 +23,7 @@ shadow = "8.1.1"
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 
-axion-release = { id = "pl.allegro.tech.build.axion-release", version = "1.15.4" }
+axion-release = { id = "pl.allegro.tech.build.axion-release", version = "1.15.5" }
 
 shadow = { id = "com.github.johnrengelman.shadow", version.ref = "shadow" }
 
