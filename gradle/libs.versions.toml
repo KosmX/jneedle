@@ -161,7 +161,7 @@ commons-math = { group = "org.apache.commons", name = "commons-math3", version =
 # - commons-statistics
 # - commons-rng
 commons-lang = { group = "org.apache.commons", name = "commons-lang3", version = "3.13.0" }
-commons-text = { group = "org.apache.commons", name = "commons-text", version = "1.10.0" }
+commons-text = { group = "org.apache.commons", name = "commons-text", version = "1.11.0" }
 
 
 mpfilepicker-desktop = { group = "com.darkrockstudios", name = "mpfilepicker-desktop", version = "1.2.0" }
