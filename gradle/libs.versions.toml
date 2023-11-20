@@ -90,7 +90,7 @@ konf-yaml = { group = "com.uchuhimo", name = "konf-yaml", version.ref = "konf" }
 
 # Jetbrains Annotations
 ## Annotations for documentation and static code analysis
-jetbrains-annotations = { group = "org.jetbrains", name = "annotations", version = "24.0.1" }
+jetbrains-annotations = { group = "org.jetbrains", name = "annotations", version = "24.1.0" }
 
 
 # ASM
