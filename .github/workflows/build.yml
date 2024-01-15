@@ -33,11 +33,23 @@ jobs:
         run: chmod +x ./gradlew
       - name: build
         run: ./gradlew build
+      - name: Gradle Dependency Submission
+        if: ${{ runner.os != 'Windows' }}
+        uses: mikepenz/gradle-dependency-submission@v0.8.6
+        with:
+          gradle-build-module: |-
+            :api
+            :cli
+            :launchwrapper
+            :gui
+        continue-on-error: true
       - name: capture build artifacts
         if: ${{ runner.os == 'Linux' && matrix.java == '17' }} # Only upload artifacts built from latest java on one OS
         uses: actions/upload-artifact@v3
         with:
           name: Artifacts
           path: |
-            build/libs/
-            compose/build/libs/
+            api/build/libs/
+            cli/build/libs/
+            launchwrapper/build/libs/
+            gui/build/libs/
