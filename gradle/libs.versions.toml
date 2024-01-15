@@ -160,7 +160,7 @@ commons-math = { group = "org.apache.commons", name = "commons-math3", version =
 # - commons-geometry
 # - commons-statistics
 # - commons-rng
-commons-lang = { group = "org.apache.commons", name = "commons-lang3", version = "3.13.0" }
+commons-lang = { group = "org.apache.commons", name = "commons-lang3", version = "3.14.0" }
 commons-text = { group = "org.apache.commons", name = "commons-text", version = "1.11.0" }
 
 
