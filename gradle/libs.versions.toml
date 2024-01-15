@@ -152,7 +152,7 @@ dsi-fastutil = { group = "it.unimi.dsi", name = "fastutil", version = "8.5.12" }
 
 # Apache Commons
 commons-compress = { group = "org.apache.commons", name = "commons-compress", version = "1.25.0" }
-commons-io = { group = "commons-io", name = "commons-io", version = "2.15.0" }
+commons-io = { group = "commons-io", name = "commons-io", version = "2.15.1" }
 commons-codec = { group = "commons-codec", name = "commons-codec", version = "1.16.0" }
 commons-math = { group = "org.apache.commons", name = "commons-math3", version = "3.6.1" }
 # when 4.0.0 is released, commons-math is being split into:
