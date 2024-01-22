@@ -117,7 +117,7 @@ okio = { group = "com.squareup.okio", name = "okio", version = "3.7.0" }
 
 # SLF4J
 ## Simple Logging Facade for Java
-slf4j = { group = "org.slf4j", name = "slf4j-api", version = "2.0.9" }
+slf4j = { group = "org.slf4j", name = "slf4j-api", version = "2.0.11" }
 # SLF4K
 ## SLF4K is a set of kotlin extensions for SLF4J
 slf4k = { group = "ca.solo-studios", name = "slf4k", version = "0.5.3" }
