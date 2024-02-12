@@ -147,7 +147,7 @@ guava-kotlin = { group = "ca.solo-studios", name = "guava-kotlin", version = "0.
 dsi-dsiutils = { group = "it.unimi.dsi", name = "dsiutils", version = "2.7.3" }
 # fastutil
 ## fastutil extends the Java Collections Framework by providing type-specific maps, sets, lists and queues
-dsi-fastutil = { group = "it.unimi.dsi", name = "fastutil", version = "8.5.12" }
+dsi-fastutil = { group = "it.unimi.dsi", name = "fastutil", version = "8.5.13" }
 
 
 # Apache Commons
