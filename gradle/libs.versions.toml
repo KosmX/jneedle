@@ -112,7 +112,7 @@ lljzip = { group = "software.coley", name = "lljzip", version = "2.3.0" }
 
 # Okio
 ##  A modern I/O library for Android, Java, and Kotlin Multiplatform.
-okio = { group = "com.squareup.okio", name = "okio", version = "3.7.0" }
+okio = { group = "com.squareup.okio", name = "okio", version = "3.9.0" }
 
 
 # SLF4J
